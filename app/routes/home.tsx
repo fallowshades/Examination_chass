@@ -162,6 +162,6 @@ export default function Home({
           <Confirm />
         </Form>
     </div>
-     <Welcome /> 
+
     </section>
 }

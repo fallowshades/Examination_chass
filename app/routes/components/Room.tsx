@@ -2,6 +2,9 @@ import React from 'react'
 import { type RoomType } from '~/routes/components/config/constants'
 const Room = ({ roomDetails }: { roomDetails: RoomType; }) => {
     console.log(roomDetails)
+      if (!roomDetails) {
+    return <div>Room data is unavailable</div>; // Handle missing data gracefully
+  }
   return (
       <div>
           <div>

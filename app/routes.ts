@@ -15,8 +15,10 @@ export default [
     route("/", "routes/dashboard.tsx", [
          
           index("routes/home.tsx"),
-        ]),
-  
+    ]),
+         
+          route("/viewBookings/:id", "routes/ViewBookings.tsx"),
+  route("*", "routes/_errors/404.tsx"),
   ]),
 
 ] satisfies RouteConfig;

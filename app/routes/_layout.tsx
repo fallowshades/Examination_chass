@@ -2,8 +2,7 @@ import React from 'react'
 import { Outlet } from 'react-router'
 import type { Route } from "./+types/_layout";
 import { useFetcher } from 'react-router';
-import ATriggerBWeek from './components/ATriggerBWeek';
-import BTriggeredDay from './components/BTriggeredDay';
+
 export default function Layout({
   loaderData,
 }: Route.ComponentProps){
