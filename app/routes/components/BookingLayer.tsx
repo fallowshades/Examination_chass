@@ -10,7 +10,7 @@ type BookingLayerProps = {
 };
 
 const BookingLayer = ({ layer }: BookingLayerProps) => (
-    console.log(layer),
+  
   <Suspense fallback={<p>Loading layer...</p>}>
     <div className="w-1/2  p-4 border-r last:border-r-0  border-yellow'>
        ">

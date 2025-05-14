@@ -20,27 +20,50 @@ function randomDelay(min: number = 1000, max: number = 7000): number {
 
 import { BIG_ROOMS, SMALL_ROOMS } from  '~/routes/components/config/constants'
 //import { defer } from "react-router"; 
+
+function abortableDelay(ms: number, signal: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(resolve, ms);
+    signal.addEventListener("abort", () => {
+      clearTimeout(timer);
+      reject(new DOMException("Aborted", "AbortError"));
+    });
+  });
+}
 export async function loader({ params }: Route.LoaderArgs) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000); // 10s timeout
   //const product = await fakeDb.getProduct(params.pid);
-   try {
+  try {
     // const [smallA, bigB] = await Promise.all([
     //   delay(randomDelay()).then(() => SMALL_ROOMS),
     //   delay(randomDelay()).then(() => BIG_ROOMS),
     // ]);
-      return {
-    smallA: delay(randomDelay()).then(() => SMALL_ROOMS),
-    bigB: delay(randomDelay()).then(() => BIG_ROOMS),
+    const smallAPromise = await abortableDelay(6000, controller.signal).then(
+      () => SMALL_ROOMS
+    );
+    const bigBPromise = abortableDelay(1000, controller.signal).then(
+      () => BIG_ROOMS
+    );
+
+    return {
+      smallA: smallAPromise,
+      bigB: bigBPromise,
+    };
+    //   return defer({
+    //   smallA: delay(randomDelay()).then(() => SMALL_ROOMS),
+    //   bigB: delay(randomDelay()).then(() => BIG_ROOMS),
+    // });;
+  } catch (err) {
+    console.error("Loader error:", err);
+    console.error("Error loading rooms:", err);
+    throw new Response("Server Timeout", { status: 504 });
+  } finally {
+    clearTimeout(timeout);
   }
-  //   return defer({
-  //   smallA: delay(randomDelay()).then(() => SMALL_ROOMS),
-  //   bigB: delay(randomDelay()).then(() => BIG_ROOMS),
-  // });;
-  } catch (error) {
-    console.error("Error loading rooms:", error);
-    return { smallA: [], bigB: [] };  // Return default empty data on error
-  }
-  // defer(
 }
+  // defer(
+
 // import { defer } from "react-router-dom"
 
 
@@ -62,23 +85,56 @@ import { groupRooms } from "~/routes/components/config/utils";
 export function HydrateFallback() {
   return <p>Loading Game...</p>;
 }
+export function ErrorComponent({ error }: { error?: any }) {
+  if (error?.status === 504) {
+    return <div>Request timed out. Please try again later.</div>;
+  }
+  return <div>Unexpected error occurred</div>;
+}
 
 export default function Home({
   loaderData,
 }: Route.ComponentProps) {
-  console.log(loaderData, "loaderData");
+  
+
+
   const { bigB, smallA } = loaderData
   return <section id='section' className='bg-chasLightGray'>
       {/* <BookingControlContainer /> */}
     <div className='flex  py-12   gap-4'>
       <Suspense fallback={<HydrateFallback />}>
-  <Await resolve={bigB}>
-    {(resolvedBigB) => (
-      <Await resolve={smallA}>
-        {(resolvedSmallA) => {
-          console.log(resolvedBigB, resolvedSmallA, 'resolved');
+         <Await resolve={Promise.all([bigB, smallA])} errorElement={<ErrorComponent />}>
+    {([resolvedBigB, resolvedSmallA]) => {
+      const grouped = groupRooms(resolvedBigB, resolvedSmallA);
+      return (
+        <>
+          {grouped.map((layer, i) => (
+            <BookingLayer key={i} layer={layer} />
+          ))}
+        </>
+      );
+    }}
+  </Await>
+  {/* <Await  resolve={bigB}  errorElement={<ErrorComponent />}>
+          {(resolvedBigB) => {
+           
 
-          const grouped = groupRooms(resolvedBigB, resolvedSmallA);
+            const grouped = groupRooms(resolvedBigB,);
+
+            return (
+              <>
+                {grouped.map((layer, i) => (
+                  <BookingLayer key={i} layer={layer} />
+                ))}
+              </>
+            );
+          }}
+        </Await>
+        <Await resolve={smallA}  errorElement={<ErrorComponent />}>
+        {(resolvedSmallA) => {
+         
+
+          const grouped = groupRooms( resolvedSmallA);
 
           return (
             <>
@@ -88,9 +144,7 @@ export default function Home({
             </>
           );
         }}
-      </Await>
-    )}
-  </Await>
+      </Await> */}
 </Suspense>
       </div>
       <div className='p-4 flex justify-center'>
