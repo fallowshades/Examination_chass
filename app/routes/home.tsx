@@ -11,7 +11,7 @@ function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function randomDelay(min: number = 1000, max: number = 6000): number {
+function randomDelay(min: number = 1000, max: number = 7000): number {
   const randomDelay = Math.floor(Math.random() * (max - min + 1)) + min;
   console.log(randomDelay, "randomDelay");
    return randomDelay
@@ -19,22 +19,37 @@ function randomDelay(min: number = 1000, max: number = 6000): number {
  
 
 import { BIG_ROOMS, SMALL_ROOMS } from  '~/routes/components/config/constants'
-// import { defer } from "react-router-dom"
-export async function clientLoader({ params }: Route.LoaderArgs) {
+//import { defer } from "react-router"; 
+export async function loader({ params }: Route.LoaderArgs) {
   //const product = await fakeDb.getProduct(params.pid);
-   const [smallA, bigB] = await Promise.all([
-    delay(randomDelay()).then(() => SMALL_ROOMS),
-    delay(randomDelay()).then(() => BIG_ROOMS),
-  ]);
-
-  // return { smallA, bigB };
-   return{
+   try {
+    // const [smallA, bigB] = await Promise.all([
+    //   delay(randomDelay()).then(() => SMALL_ROOMS),
+    //   delay(randomDelay()).then(() => BIG_ROOMS),
+    // ]);
+      return {
     smallA: delay(randomDelay()).then(() => SMALL_ROOMS),
     bigB: delay(randomDelay()).then(() => BIG_ROOMS),
-   }
+  }
+  //   return defer({
+  //   smallA: delay(randomDelay()).then(() => SMALL_ROOMS),
+  //   bigB: delay(randomDelay()).then(() => BIG_ROOMS),
+  // });;
+  } catch (error) {
+    console.error("Error loading rooms:", error);
+    return { smallA: [], bigB: [] };  // Return default empty data on error
+  }
   // defer(
 }
+// import { defer } from "react-router-dom"
 
+
+// export async function loader() {
+//   return defer({
+//     smallA: delay(randomDelay()).then(() => SMALL_ROOMS),
+//     bigB: delay(randomDelay()).then(() => BIG_ROOMS),
+//   });
+// }
 import GroupedBookings from "./components/GroupedBookings";
 import Confirm from "./components/Confirm";
 import OnlineBooking from "./components/OnlineBooking";
@@ -51,26 +66,32 @@ export function HydrateFallback() {
 export default function Home({
   loaderData,
 }: Route.ComponentProps) {
+  console.log(loaderData, "loaderData");
   const { bigB, smallA } = loaderData
   return <section id='section' className='bg-chasLightGray'>
       {/* <BookingControlContainer /> */}
     <div className='flex  py-12   gap-4'>
-      <Suspense fallback={<p>Loading rooms...</p>}>
-        <Await resolve={Promise.all([bigB, smallA])}>
-          {(resolved) => {
-          const [resolvedBig, resolvedSmall] = resolved;
-          console.log(resolvedBig, resolvedSmall), 'resolved';
-          const grouped = groupRooms(resolvedBig, resolvedSmall)
-            return (
+      <Suspense fallback={<HydrateFallback />}>
+  <Await resolve={bigB}>
+    {(resolvedBigB) => (
+      <Await resolve={smallA}>
+        {(resolvedSmallA) => {
+          console.log(resolvedBigB, resolvedSmallA, 'resolved');
+
+          const grouped = groupRooms(resolvedBigB, resolvedSmallA);
+
+          return (
             <>
-                {grouped.map((layer, i) => (
-                  <BookingLayer key={i} layer={layer} />
-                ))}
+              {grouped.map((layer, i) => (
+                <BookingLayer key={i} layer={layer} />
+              ))}
             </>
-            );
-          }}
-        </Await>
-      </Suspense>
+          );
+        }}
+      </Await>
+    )}
+  </Await>
+</Suspense>
       </div>
       <div className='p-4 flex justify-center'>
         <div className=' border-t  border-chasBlue'>
