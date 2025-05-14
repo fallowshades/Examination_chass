@@ -26,3 +26,58 @@ export type TimeSlot = {
   startTime: string;
   endTime: string;
 };
+
+
+//  pageButtons.push(
+//       addPageButton({ page: 1, activeClass: currentWeek === 1 })
+//     );
+//     // dots
+
+//     if (currentWeek > 3) {
+//       pageButtons.push(
+//         <Button size='icon' variant='outline' key='dots-1'>
+//           ...
+//         </Button>
+//       );
+//     }
+//     // one before current page
+//     if (currentWeek !== 1 && currentWeek !== 2) {
+//       pageButtons.push(
+//         addPageButton({
+//           page: currentWeek - 1,
+//           activeClass: false,
+//         })
+//       );
+//     }
+//     // current page
+//     if (currentWeek !== 1 && currentWeek !== currentWeek) {
+//       pageButtons.push(
+//         addPageButton({
+//           page: currentWeek,
+//           activeClass: true,
+//         })
+//       );
+//     }
+//     // one after current page
+
+//     if (currentWeek !== totalWeeks && currentWeek !== totalWeeks - 1) {
+//       pageButtons.push(
+//         addPageButton({
+//           page: currentWeek + 1,
+//           activeClass: false,
+//         })
+//       );
+//     }
+//     if (currentWeek < totalWeeks - 2) {
+//       pageButtons.push(
+//         <Button size='icon' variant='outline' key='dots-2'>
+//           ...
+//         </Button>
+//       );
+//     }
+//     pageButtons.push(
+//       addPageButton({
+//         page: totalWeeks,
+//         activeClass: currentWeek === totalWeeks,
+//       })
+//     );

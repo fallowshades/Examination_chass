@@ -89,4 +89,4 @@ export const DAYS_OF_THE_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', '
 export const WEEKS = ['Week 1', 'Week 2', 'Week 3', 'Week 4'] as const;
 export const ROOM_LIMIT = 8;
   export const PAGINATION_PER_PAGE_DEFAULT = '10'
-  export const PAGINATION_PER_PAGE_ITEMS = ['10']  as [string, ...string[]];
+ export const PAGINATION_PER_PAGE_ITEMS = Array.from({ length: 52 }, (_, i) => String(i + 1)) as [string, ...string[]];

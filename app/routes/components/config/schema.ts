@@ -6,22 +6,6 @@ import {
 
 } from '../config'
 
-// Define the schema for pagination
-export const PaginationSchema = z.object({
-  week: z.preprocess(
-    (val) => (val === null ? undefined : val),
-    z.string().optional().default('1').transform(Number),
-  ),
-  newWeek: z.preprocess(
-    (val) => (val === null ? undefined : val),
-    z
-      .enum(PAGINATION_PER_PAGE_ITEMS)
-      .optional()
-      .default(PAGINATION_PER_PAGE_DEFAULT)
-      .transform(Number),
-  ),
-})
-
 
 //////////777old'
 // Define the TimeIntervalState schema
@@ -47,9 +31,36 @@ export const SetTimeIntervalStateSchema = z.object({
 
 //may change in the future, mb dont
 
+
+// Define the schema for pagination
+export const PaginationSchema = z.object({
+  week: z.preprocess(
+    (val) => (val === null ? undefined : val),
+    z.string().optional().default('1').transform(Number),
+  ),
+  newWeek: z.preprocess(
+    (val) => (val === null ? undefined : val),
+    z
+      .enum(PAGINATION_PER_PAGE_ITEMS)
+      .optional()
+      .default(PAGINATION_PER_PAGE_DEFAULT)
+      .transform(Number),
+  ),
+})
+
+
 export const parseQueryParams = (request: Request) => {
-    const searchParams = new URL(request.url).searchParams
+   const searchParams = new URL(request.url).searchParams
     console.log(searchParams)
+
+  const { week,  newWeek } = PaginationSchema.parse({
+    week: searchParams.get('week'),
+     newWeek : searchParams.get('newWeek'),
+  })
+//  const no = { search, filters, sortBy, sortOrder, page, perPage}
+  return { week,newWeek}
+}
+ 
 //   const search = SearchSchema.parse({
 //     [SEARCH_FIELD]: searchParams.get(SEARCH_FIELD),
 //   })
@@ -62,11 +73,3 @@ export const parseQueryParams = (request: Request) => {
 //     sort_by: searchParams.get('sort_by'),
 //     sort_order: searchParams.get('sort_order'),
 //   })
-
-  const { week,  newWeek } = PaginationSchema.parse({
-    week: searchParams.get('week'),
-     newWeek : searchParams.get('newWeek'),
-  })
-//  const no = { search, filters, sortBy, sortOrder, page, perPage}
-  return { week,newWeek}
-}

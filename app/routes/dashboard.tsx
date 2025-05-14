@@ -1,7 +1,7 @@
 
 import React from 'react'
 import type { Route } from "./+types/dashboard";
-import { Outlet } from 'react-router';
+import { Outlet, redirect } from 'react-router';
 import { useFetcher } from 'react-router';
 import ATriggerBWeek from './components/ATriggerBWeek';
 import BTriggeredDay from './components/BTriggeredDay';
@@ -14,8 +14,39 @@ export const formSchema = z.object({
     
 })
 
+import { calculateDayAndWeek } from '~/routes/queries.server';
+import type { TimeIntervalState } from './components/config/types';
+export async function loader({ request }: { request: Request; }) {
+
+    const { dayOfWeek, weekOfYear } = calculateDayAndWeek();
+const defaultState: TimeIntervalState = {
+  day: dayOfWeek,
+  week: weekOfYear,
+  totalHours: 0,
+  rooms: {},
+    }
+    console.log(dayOfWeek, weekOfYear, 'loader')
+      const url = new URL(request.url); // full URL, including origin, path, and search
+  const origin = url.origin;
+  const pathname = url.pathname;//${weekOfYear}
+  const hasWeek = url.searchParams.has("week");
+  const hasDay = url.searchParams.has("day");
+
+  if (!hasWeek || !hasDay) {
+    const { dayOfWeek, weekOfYear } = calculateDayAndWeek();
+
+    return redirect(`${url.pathname}?week=3&day=${dayOfWeek}`);
+  }
+
+  // Don't redirect again; just return something or null
+  return null;
+}
+export async function clientLoader() {
+    return null
+}
+
 export async function action({ request }: { request: Request; }) {
-    const { week } = { week: 'setup' }//parseQueryParams(request)
+    const { week } = parseQueryParams(request)
    
     const formData = await request.formData();
      console.log(week,formData, 'action')

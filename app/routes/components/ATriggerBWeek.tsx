@@ -16,13 +16,14 @@ type ButtonContainerProps = {
 };
 
 type ButtonProps = {
-  Weekwindow: number;
+  page: number;
   activeClass: boolean;
 };
 import {
   useLocation, useNavigate, useSearchParams, Link, replace, useFetcher
-  
- } from 'react-router';
+  ,useSubmit
+} from 'react-router';
+ import { useState } from 'react';
 const ATriggerBWeek = () => {
    let fetcher = useFetcher();
     
@@ -40,12 +41,15 @@ const ATriggerBWeek = () => {
   const location = useLocation(); // like usePathname
   const navigate = useNavigate(); // like useRouter().push
   const displayedWeeks = ['s', 's']
-  const currentWeek = Number(searchParams.get('week')) || 9;
-   const totalWeeks = Number(searchParams.get('total')) || 9;
+  const [currentWeek, setCurrentWeek] = useState(() => {
+  const parsed = Number(searchParams.get("week"));
+  return isNaN(parsed) ? 9 : parsed;
+});
+   const totalWeeks = Number(searchParams.get('total')) || 10;
   
-  
-  const handleWeekChange = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const newWeek = e.currentTarget.value
+    const submit = useSubmit()
+  const handleWeekChange = (newWeek: number) => {
+   
     console.log('newWeek', newWeek)
     const defaultParams = {
       week: searchParams.get('week') || '',
@@ -53,13 +57,35 @@ const ATriggerBWeek = () => {
     };
 
     let params = new URLSearchParams(defaultParams);
-    handleSubmit(newWeek)
-   // navigate(`?${params.toString()}`, {replace: true});
+    handleSubmit(String(newWeek))
+   navigate(`${location.pathname}?${params.toString()}`, {replace: true});
+    setCurrentWeek(newWeek);
+    submit(newWeek, { method: 'post' });
   };
   //${location.pathname}
-  const renderPagination = (): null[] => {
-  return []
-};
+    const addPageButton = ({ page, activeClass }: ButtonProps) => {
+    return (
+      <Button
+        key={page}
+        size='icon'
+        variant={activeClass ? 'default' : 'outline'}
+        onClick={() => handleWeekChange(page)}
+      >
+        {page}
+      </Button>
+    );
+    };
+  
+   const renderPageButtons = () => {
+    const pageButtons = [];
+    // first page
+   
+      for (let i = 1; i <= totalWeeks; i++) {
+    pageButtons.push(addPageButton({ page: i, activeClass: i === currentWeek }));
+  }
+
+    return pageButtons;
+  };
    return (
     <>
       
@@ -67,10 +93,10 @@ const ATriggerBWeek = () => {
         <PaginationContent className='bg-chasGray rounded-full'>
             <Button
             type='submit'
-             onClick={(e) => {
+             onClick={() => {
                let prevPage = currentWeek - 1;
                if (prevPage < 1) prevPage = currentWeek;
-               handleWeekChange(e);
+               handleWeekChange(prevPage);
               
              }
                
@@ -83,14 +109,14 @@ const ATriggerBWeek = () => {
           </Button>
 
      
-          {renderPagination()}
+          {renderPageButtons()}
          
             <Button
             type='button'
-             onClick={(e) => {
+             onClick={() => {
                 let nextPage = currentWeek + 1;
           if (nextPage > totalWeeks) nextPage = 1;
-          handleWeekChange(e);
+          handleWeekChange(nextPage);
             }}
           
              aria-label='Next Page'
