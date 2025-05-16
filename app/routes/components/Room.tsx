@@ -36,6 +36,7 @@ import { useState } from 'react'
 import { useSearchParams } from 'react-router';
 
 import { useEffect } from 'react';
+import CheckboxWaterFall from './CheckboxWaterFall';
 const CheckBoxMenu = ({ roomId = 'o' }: { roomId?: string; }) => {
     
     const r = roomId
@@ -69,7 +70,7 @@ type TimeSlots = Record<string, { timeSlotId: string; startTime: string, endTime
 
 
 type MultiselectProps = TimeSlots
-const CheckboxWaterFall = ({roomId}:{roomId:string}) => {
+const CheckboxWaterFallOld = ({roomId}:{roomId:string}) => {
     // ({ selectedTimeSlots, setSelectedTimeSlots }:
     // { setSelectedTimeSlots: (slots: MultiselectProps) => void, selectedTimeSlots: MultiselectProps; })
 // => {
@@ -119,9 +120,7 @@ const CheckboxWaterFall = ({roomId}:{roomId:string}) => {
 // }));
 
     return (
-        <div>
-            hej
-        </div>
+       <div>k</div>
     //       <fetcher.Form method='post'>
     //   {formattedTimeSlots.map((timeslot) => {
     //     const isChecked =

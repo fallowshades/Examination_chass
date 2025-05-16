@@ -1,4 +1,6 @@
 import type { Route } from "./+types/home";
+
+
 export default function ViewBookings({
   loaderData,
 }: Route.ComponentProps){

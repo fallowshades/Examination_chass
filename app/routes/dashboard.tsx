@@ -1,7 +1,7 @@
 
 import React from 'react'
 import type { Route } from "./+types/dashboard";
-import { Outlet, redirect ,useNavigate,useSearchParams} from 'react-router';
+import { Outlet, redirect ,useNavigate,useSearchParams, type ClientLoaderFunctionArgs} from 'react-router';
 import { useFetcher } from 'react-router';
 import ATriggerBWeek from './components/ATriggerBWeek';
 import BTriggeredDay from './components/BTriggeredDay';
@@ -40,10 +40,19 @@ const defaultState: TimeIntervalState = {
   // Don't redirect again; just return something or null
   return null;
 }
-export async function clientLoader() {
+
+const cashe = new Map() //https://remix.run/resources/remix-client-cache mb we can try cashe later
+export const clientLoader = async ({ serverLoader, }: ClientLoaderFunctionArgs) => {
+  const cachedServerData = cashe.get("key")
+  if (cachedServerData) {
+    console.log(cachedServerData, 'cachedServerData')
+    return cachedServerData
+  }
+  const serverData = await serverLoader();
+  cashe.set("key", JSON.stringify(serverData))
   return null
 }
-
+clientLoader.hydrate = false //local store mb not present
 
 // export async function clientAction({ request }: { request: Request }) {
 //   const formData = await request.formData();
@@ -85,7 +94,8 @@ console.log(values, 'values')
 
 import { useState, useEffect } from 'react';
 export default function dashboard({ loaderData }: { loaderData: { week: string; }; }) {
- 
+  const data = loaderData;
+  console.log(data, 'loaderData')
     let fetcher = useFetcher();
      const [searchParams, setSearchParams] = useSearchParams();
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
