@@ -24,9 +24,9 @@ import {
   ,useSubmit
 } from 'react-router';
  import { useState } from 'react';
-const ATriggerBWeek = () => {
+const ATriggerBWeek = ({currentWeek}:{currentWeek:number}) => {
    let fetcher = useFetcher();
-    
+        const submit = useSubmit()
   const handleSubmit = (newWeek: string) => {
       const formData = new FormData();
   formData.append('newWeek', newWeek);
@@ -41,26 +41,20 @@ const ATriggerBWeek = () => {
   const location = useLocation(); // like usePathname
   const navigate = useNavigate(); // like useRouter().push
   const displayedWeeks = ['s', 's']
-  const [currentWeek, setCurrentWeek] = useState(() => {
-  const parsed = Number(searchParams.get("week"));
-  return isNaN(parsed) ? 9 : parsed;
-});
+ 
    const totalWeeks = Number(searchParams.get('total')) || 10;
   
-    const submit = useSubmit()
+  
   const handleWeekChange = (newWeek: number) => {
    
-    console.log('newWeek', newWeek)
-    const defaultParams = {
-      week: searchParams.get('week') || '',
-      newWeek: String(newWeek),
-    };
-
-    let params = new URLSearchParams(defaultParams);
+      setSearchParams((prev) => {
+    const updated = new URLSearchParams(prev);
+    updated.set('week', String(newWeek));
+    return updated;
+  });
     handleSubmit(String(newWeek))
-   navigate(`${location.pathname}?${params.toString()}`, {replace: true});
-    setCurrentWeek(newWeek);
-    submit(newWeek, { method: 'post' });
+    
+   
   };
   //${location.pathname}
     const addPageButton = ({ page, activeClass }: ButtonProps) => {

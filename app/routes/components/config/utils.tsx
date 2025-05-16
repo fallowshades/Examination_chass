@@ -28,6 +28,35 @@ export type TimeSlot = {
 };
 
 
+
+
+type DateType = {
+    year: number, week: number;
+}
+export const getFirstDateOfISOWeek = ({ year, week }:DateType) => {
+  const simpleDate = new Date(year, 0, 1 + (week - 1) * 7);
+  const dayOfWeek = simpleDate.getDay();
+  const difference = (dayOfWeek <= 4 ? 1 : 8) - dayOfWeek;
+  const monday = new Date(simpleDate.setDate(simpleDate.getDate() + difference));
+  return monday;
+};
+export function formatWithPadding(day: string, baseDate: Date, offset: number) {
+  const date = new Date(baseDate);
+  date.setDate(baseDate.getDate() + offset);
+
+  const formatted = date.toLocaleDateString('sv-SE', {
+    day: '2-digit',
+    month: '2-digit',
+  });
+
+  const [dayPart, monthPart] = formatted.split('/');
+
+  const paddedDay = Number(dayPart) < 10 ? `${dayPart}\u00A0` : dayPart;
+  const paddedMonth = Number(monthPart) < 10 ? `\u00A0${monthPart}` : monthPart;
+
+  return `${day} ${Number(paddedDay)}${Number(dayPart) < 10 ? ' ' : ''}/${Number(dayPart) < 10 ? ' ' : ''}${Number(paddedMonth)}`;
+}
+
 //  pageButtons.push(
 //       addPageButton({ page: 1, activeClass: currentWeek === 1 })
 //     );
