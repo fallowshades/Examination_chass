@@ -1,4 +1,4 @@
-// import type { LoaderFunctionArgs } from 'react-router'
+import type { LoaderFunctionArgs } from 'react-router'
 // import clsx from 'clsx'
 // import { useCombobox } from 'downshift'
 // import { useId, useState } from 'react'
@@ -7,15 +7,16 @@
 // import { searchCustomers } from '~/models/customer.server'
 // import { requireUser } from '~/session.server'
 
-// export async function loader({ request }: LoaderFunctionArgs) {
-//   await requireUser(request)
-//   const url = new URL(request.url)
-//   const query = url.searchParams.get('query')
-//   invariant(typeof query === 'string', 'query is required')
-//   return {
-//     customers: await searchCustomers(query),
-//   }
-// }
+export async function loader({ request }: LoaderFunctionArgs) {
+  // await requireUser(request)
+  // const url = new URL(request.url)
+  // const query = url.searchParams.get('query')
+  // invariant(typeof query === 'string', 'query is required')
+  return;
+  // {
+  //   customers: await searchCustomers(query),
+  // }
+}
 
 // export function CustomerCombobox({ error }: { error?: string | null }) {
 //   // 🐨 implement fetcher here

@@ -1,5 +1,6 @@
-import {ActionFunctionArgs} from 'react-router'
+import {type ActionFunctionArgs} from 'react-router'
 import { useFetcher } from 'react-router'
+
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     const formData = await request.formData();

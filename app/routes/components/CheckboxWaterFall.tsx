@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { type JSX } from 'react'
 import { useFetcher } from 'react-router';
 import {
   DropdownMenu,
@@ -11,106 +11,95 @@ import { Checkbox } from '~/components/ui/checkbox';
 //     selectedTimeSlots: Record<string, {timeSlotId: string; startTime: string; endTime: string}[]>
     
 // }
-const CheckboxWaterFall = ({roomId}:{roomId:string}) => {
-    const fetcher = useFetcher()
+import { useId } from 'react';
+import { useEffect,useState } from 'react';
+// import { useUpdateCheckbox } from '../resources/UpdateCheckboxes';
+import  { type TimeSlot as TimeSlotList,defaultTimeSlotSkeletoons } from '~/utils/TimeSlots';
+const CheckboxWaterFall = ({ roomId }: { roomId: string; }) => {
+  
+  const fetcher = useFetcher({ key: 'resource.checkbox.update' })
+//#startregion
+  useEffect(() => {
+    if (fetcher.state === "idle" && !fetcher.data && fetcher.type === 'init') {
+      fetcher.load("/resources/updatecheckbox?roomId=123"); // Route-specific loader or endpoint
+    }
+  }, []);
+
+  
+  const [selectedTimeSlots, setSelectedTimeSlots] = useState<TimeSlotList[]>(
+    defaultTimeSlotSkeletoons
+  )
+
+   useEffect(() => {
+    if (fetcher.data?.amenities) {
+      setSelectedTimeSlots(fetcher.data.amenities);
+    }
+  }, [fetcher.data]);
+//#endregion
+
+
+  const handleChange = (amenity: TimeSlotList) => {
+    setSelectedTimeSlots((prev) => {
+      return prev.map((a) => {
+        if (a.id === amenity.id) {
+          return { ...a, selected: !a.selected }
+        }
+        return a
+      })
+    })
+  }
+
+  type FormattedTimeSlot = TimeSlotList & {
+    label: string;
+    icon: () => JSX.Element;
+  };
+
+  const formattedTimeSlots: FormattedTimeSlot[] = selectedTimeSlots.map((amenity) => ({
+    id: amenity.id,
+    timeSlotId: amenity.id,
+    label: `${amenity.startTime} - ${amenity.endTime}`,
+    startTime: amenity.startTime,
+    endTime: amenity.endTime,
+    icon: () => <span>🕒</span>,
+    selected: amenity.selected,
+  }));
+
   return (
-    <div> <fetcher.Form method='post'>
-          {formattedTimeSlots.map((timeslot) => {
-            const isChecked =
-              selectedTimeSlots[timeslot.roomID]?.some(
-                (slot) => slot.timeSlotID === String(timeslot.timeSlotID)
-              ) || false
-          
-            
-            
-            
-            return (
-              <DropdownMenuItem
-                key={timeslot.timeSlotID}
-                onSelect={(e) => e.preventDefault()}
-              className='even:bg-white'>
-                <label
-                  htmlFor={`timeslot-${timeslot.timeSlotID}`}
-                  className='flex items-center gap-2'>
-                  <Checkbox
-                    id={`timeslot-${timeslot.timeSlotID}`}
-                    checked={
-                      isChecked || false
-                      //selectedTimeSlots?.has(timeslot.timeSlotID) || false
-                    }
-                    onCheckedChange={(checked) =>
-                      // handleChange(Boolean(checked), timeslot)
-                      handleTimeSlotSelect({
-                        roomID: String(timeslot.roomID),
-                        slot: {
-                          timeSlotID: String(timeslot.timeSlotID), // Convert number to string
-                          startTime: timeslot.startTime,
-                          endTime: timeslot.endTime,
-                        },
-                        isChecked: Boolean(checked),
-                      })
-                    }
-                  />
-                  {timeslot.startTime} - {timeslot.endTime}
-                </label>
-              </DropdownMenuItem>
-            )
-          })}
-        </fetcher.Form>
+    <div> 
+        <input
+        type='hidden'
+        name='amenities'
+        value={JSON.stringify(selectedTimeSlots)}
+      />
+     {formattedTimeSlots.map((timeslot) => (
+  <DropdownMenuItem
+    key={timeslot.id}
+    onSelect={(e) => e.preventDefault()}
+    className='even:bg-white'>
+    
+    {/* Render the icon */}
+    {/** If you run into errors here, do:
+        const Icon = timeslot.icon;
+        <Icon className="..." /> */}
+    <timeslot.icon />
+
+    <label
+      htmlFor={`timeslot-${timeslot.id}`}
+      className='flex items-center gap-2'
+    >
+      <Checkbox
+        id={`timeslot-${timeslot.id}`}
+        checked={!!timeslot.selected}
+        onCheckedChange={() => handleChange(timeslot)}
+      />
+      {timeslot.label}
+    </label>
+  </DropdownMenuItem>
+))}
+         
         </div>
   )
 }
 
 export default CheckboxWaterFall;
 
-
-type TimeSlot = {
-  timeSlotId: string;
-  startTime: string;
-  endTime: string;
-};
-
-//better to default serialization
-// // 🔧 Helper to encode selection as string
-// function encodeSelection(data: Record<string, TimeSlot[]>) {
-//   return Object.entries(data)
-//     .map(([roomId, slots]) =>
-//       slots.map(slot => `${roomId}.${slot.startTime}-${slot.endTime}`).join(",")
-//     )
-//     .join(",");
-// }
-
-// // 🔧 Helper to decode selection from string
-// function parseSelection(raw: string | null): Record<string, TimeSlot[]> {
-//   if (!raw) return {};
-//   const record: Record<string, TimeSlot[]> = {};
-
-//   const items = raw.split(",");
-//   for (const item of items) {
-//     const [room, time] = item.split(".");
-//     if (!room || !time) continue;
-//     const [startTime, endTime] = time.split("-");
-//     if (!startTime || !endTime) continue;
-
-//     record[room] ??= [];
-//     record[room].push({
-//       timeSlotId: `${startTime}-${endTime}`,
-//       startTime,
-//       endTime,
-//     });
-//   }
-
-//   return record;
-    
-// }
-
-//      const toggleSlot = (slot: { timeSlotId: string; startTime: string; endTime: string }) => {
-//   const roomSlots = selectedTimeSlots[roomId] || [];
-//   const exists = roomSlots.some(s => s.timeSlotId === slot.timeSlotId);
-//   const updated = exists
-//     ? roomSlots.filter(s => s.timeSlotId !== slot.timeSlotId)
-//     : [...roomSlots, slot];
-
-//   const newSelected = { ...selectedTimeSlots, [roomId]: updated };
-//   setSearchParams({ selected: encodeSelection(newSelected) });
-//                  };

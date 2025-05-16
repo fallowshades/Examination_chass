@@ -49,6 +49,7 @@ console.log('performMutation called with:', {
 //   const weekOfYear = Math.ceil((date.getDate() + date.getDay()) / 7);
 //   return { dayOfWeek, weekOfYear };
 // };
+
 export const calculateDayAndWeek = () => {
   const today = new Date();
 

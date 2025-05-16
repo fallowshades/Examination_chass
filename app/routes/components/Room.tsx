@@ -50,7 +50,9 @@ const CheckBoxMenu = ({ roomId = 'o' }: { roomId?: string; }) => {
       onOpenChange={setOpen}
     >
       <DropdownMenuTrigger
-        asChild
+          asChild
+                      onClick={(e) => e.stopPropagation()}
+
         className=' rounded-full select-none  px-4 text-2xl bg-white text-chasBlue border-2 border-chasBlue hover:bg-chasB  focus-visible:outline-none data-[state=open]:bg-chasBlue data-[state=open]:text-white'>
         <Button className='flex gap-2 text-base'>
           {' '}
@@ -58,10 +60,11 @@ const CheckBoxMenu = ({ roomId = 'o' }: { roomId?: string; }) => {
           <FaChevronDown />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className='mt-1 overflow-hidden rounded bg-[#ECE9E9]  p-2 text-left shadow' sideOffset={-1}>
-        <CheckboxWaterFall
+        <DropdownMenuContent
+          className='mt-1 overflow-hidden rounded bg-[#ECE9E9]  p-2 text-left shadow' sideOffset={-1}>
+        {open && <CheckboxWaterFall
           roomId={r}
-        />
+        />}
       </DropdownMenuContent>
     </DropdownMenu>
     )
@@ -110,7 +113,7 @@ const CheckboxWaterFallOld = ({roomId}:{roomId:string}) => {
     : [...roomSlots, slot];
 
   const newSelected = { ...selectedTimeSlots, [roomId]: updated };
-  setSearchParams({ selected: encodeSelection(newSelected) });
+  // setSearchParams({ selected: encodeSelection(newSelected) });
 };
     
 //     const formattedTimeSlots = checkboxes.map((timeslot) => ({
@@ -166,12 +169,6 @@ const CheckboxWaterFallOld = ({roomId}:{roomId:string}) => {
 };
 
 
-type TimeSlot = {
-  timeSlotId: string;
-  startTime: string;
-  endTime: string;
-};
-
 // 🔧 Helper to encode selection as string
 function encodeSelection(data: Record<string, TimeSlot[]>) {
   return Object.entries(data)
@@ -180,6 +177,13 @@ function encodeSelection(data: Record<string, TimeSlot[]>) {
     )
     .join(",");
 }
+
+type TimeSlot = {
+  id: string;
+  timeSlotId: string;
+  startTime: string;
+  endTime: string;
+};
 
 // 🔧 Helper to decode selection from string
 function parseSelection(raw: string | null): Record<string, TimeSlot[]> {
@@ -194,14 +198,24 @@ function parseSelection(raw: string | null): Record<string, TimeSlot[]> {
     if (!startTime || !endTime) continue;
 
     record[room] ??= [];
-    record[room].push({
-      timeSlotId: `${startTime}-${endTime}`,
-      startTime,
-      endTime,
-    });
+    // record[room].push({
+    //   timeSlotId: `${startTime}-${endTime}`,
+    //   startTime,
+    //   endTime,
+    // });
   }
 
   return record;
     
 }
 
+     const toggleSlot = (slot: { timeSlotId: string; startTime: string; endTime: string }) => {
+  // const roomSlots = selectedTimeSlots[roomId] || [];
+  // const exists = roomSlots.some(s => s.timeSlotId === slot.timeSlotId);
+  // const updated = exists
+  //   ? roomSlots.filter(s => s.timeSlotId !== slot.timeSlotId)
+  //   : [...roomSlots, slot];
+
+  // const newSelected = { ...selectedTimeSlots, [roomId]: updated };
+  // setSearchParams({ selected: encodeSelection(newSelected) });
+                 };
