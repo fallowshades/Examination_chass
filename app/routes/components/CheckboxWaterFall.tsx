@@ -20,7 +20,7 @@ const CheckboxWaterFall = ({ roomId }: { roomId: string; }) => {
   const fetcher = useFetcher({ key: 'resource.checkbox.update' })
 //#startregion
   useEffect(() => {
-    if (fetcher.state === "idle" && !fetcher.data && fetcher.type === 'init') {
+    if (fetcher.state === "idle" && !fetcher.data && true) {
       fetcher.load("/resources/updatecheckbox?roomId=123"); // Route-specific loader or endpoint
     }
   }, []);
@@ -103,3 +103,8 @@ const CheckboxWaterFall = ({ roomId }: { roomId: string; }) => {
 
 export default CheckboxWaterFall;
 
+
+import { GeneralErrorBoundary } from './GeneralErrorBoundary';
+export function ErrorBoundary() {
+	return <GeneralErrorBoundary />
+}
