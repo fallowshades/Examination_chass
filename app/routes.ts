@@ -15,6 +15,8 @@ export default [
     route("/", "routes/dashboard.tsx", [
          
           index("routes/home.tsx"),
+           route("/:dates", "routes/dashboard.dates.tsx"),
+          route("/:id", "routes/CheckboxWaterFall.tsx")
     ]),
          
           route("/viewBookings/:id", "routes/ViewBookings.tsx"),

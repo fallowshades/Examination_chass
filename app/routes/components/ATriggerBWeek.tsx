@@ -56,6 +56,7 @@ const ATriggerBWeek = ({currentWeek}:{currentWeek:number}) => {
     
    
   };
+  //#region evt handling defaults
   //${location.pathname}
     const addPageButton = ({ page, activeClass }: ButtonProps) => {
     return (
@@ -80,6 +81,7 @@ const ATriggerBWeek = ({currentWeek}:{currentWeek:number}) => {
 
     return pageButtons;
   };
+  //#endregion
    return (
     <>
       
@@ -95,8 +97,8 @@ const ATriggerBWeek = ({currentWeek}:{currentWeek:number}) => {
              }
                
              }
-             value= {currentWeek-1}
-             defaultValue={currentWeek-1}
+            //  value= {currentWeek-1}
+            //  defaultValue={currentWeek-1}
             aria-label='Next Page'>
             <span></span>
             <ChevronLeft className='h-4 w-4' />
@@ -114,8 +116,9 @@ const ATriggerBWeek = ({currentWeek}:{currentWeek:number}) => {
             }}
           
              aria-label='Next Page'
-            value={currentWeek+1}
-             defaultValue={currentWeek + 1} >
+            // value={currentWeek+1}
+           //  defaultValue={currentWeek + 1}'
+           >
             
             <span></span>
             <ChevronRight className='h-4 w-4' />
