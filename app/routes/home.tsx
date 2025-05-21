@@ -82,7 +82,6 @@ export async function clientLoader({
 //     bigB: delay(randomDelay()).then(() => BIG_ROOMS),
 //   });
 // }
-import GroupedBookings from "./components/GroupedBookings";
 import Confirm from "./components/Confirm";
 import OnlineBooking from "./components/OnlineBooking";
 import { Form,Await } from "react-router";
