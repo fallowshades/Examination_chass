@@ -4,7 +4,8 @@ import {
   Meta,
   Outlet,
   Scripts,
-  ScrollRestoration,
+	ScrollRestoration,
+  data
 } from "react-router";
 
 import type { Route } from "./+types/root";
@@ -23,28 +24,144 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
-export function Layout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <Meta />
-        <Links />
-      </head>
-      <body>
+import { makeTimings, time } from "./utils/timing.server";
+import { getUserId, logout } from "./utils/auth.server";
+import { ClientHintCheck } from './utils/client-hints';
+import { getEnv } from "./utils/env.server";
+import { combineHeaders } from "./utils/misc";
+export async function loader({ request }: Route.LoaderArgs) {
+	const timings = makeTimings('root loader')
+	const userId = await time(() => getUserId(request), {
+		timings,
+		type: 'getUserId',
+		desc: 'getUserId in root',
+	})
+
+	const user = userId
+		? await time(
+				() =>
+					 new Promise((resolve) =>
+          setTimeout(() => {
+            resolve({
+              id: userId,
+              name: 'Test User',
+              username: 'testuser',
+              image: { objectKey: 'dummy-key' },
+              roles: [
+                {
+                  name: 'admin',
+                  permissions: [
+                    { entity: 'user', action: 'read', access: 'granted' },
+                    { entity: 'user', action: 'write', access: 'denied' },
+                  ],
+                },
+              ],
+            })
+          }, 300)
+        ),
+				{ timings, type: 'find user', desc: 'find user in root' },
+			)
+		: null
+	if (userId && !user) {
+		console.info('something weird happened')
+		// something weird happened... The user is authenticated but we can't find
+		// them in the database. Maybe they were deleted? Let's log them out.
+		await logout({ request, redirectTo: '/' })
+	}
+	
+	return data(
+		{
+			user,
+			requestInfo: {
+				// hints: getHints(request),
+				// origin: getDomainUrl(request),
+				path: new URL(request.url).pathname,
+				// userPrefs: {
+				// 	theme: getTheme(request),
+				// },
+			},
+			ENV: getEnv(),
+		},
+		{
+			headers: combineHeaders(
+				{ 'Server-Timing': timings.toString() }
+			),
+		},
+	)
+}
+
+// import { type Theme } from './utils/theme.server'
+export type Theme = 'light' | 'dark'
+function Document({
+	children,
+	nonce,
+	theme = 'light',
+	env = {},
+}: {
+	children: React.ReactNode;
+	nonce: string;
+	theme?: Theme;
+	env?: Record<string, string | undefined>;
+}) {
+	const allowIndexing = env.ALLOW_INDEXING !== 'false';
+	return (
+		<html lang="en" className={`${theme} h-full overflow-x-hidden`}>
+			<head>
+				<ClientHintCheck nonce={nonce} />
+				<Meta />
+				<meta charSet="utf-8" />
+				<meta name="viewport" content="width=device-width,initial-scale=1" />
+				{allowIndexing ? null : (
+					<meta name="robots" content="noindex, nofollow" />
+				)}
+				<Links />
+			</head>
+			<body className="bg-background text-foreground">
+				{children}
+				<script
+					nonce={nonce}
+					dangerouslySetInnerHTML={{
+						__html: `window.ENV = ${JSON.stringify(env)}`,
+					}}
+				/>
+				<ScrollRestoration nonce={nonce} />
+				<Scripts nonce={nonce} />
+			</body>
+		</html>
+	);
+}
+import { useLoaderData } from "react-router";
+import { useNonce } from "./utils/nonce-provider";
+
+export function Layout({ children }: { children: React.ReactNode; }) {
+	const data = useLoaderData<typeof loader | null>()
+	const nonce = useNonce()
+	
+	return (
+	  <Document nonce={nonce}  env={data?.ENV}>
+			{children}
+		</Document>
+    // <html lang="en">
+    //   <head>
+    //     <meta charSet="utf-8" />
+    //     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    //     <Meta />
+    //     <Links />
+    //   </head>
+    //   <body>
       
-        {children}
-        <ScrollRestoration />
-        <Scripts />
-      </body>
-    </html>
+    //     {children}
+    //     <ScrollRestoration />
+    //     <Scripts />
+    //   </body>
+    // </html>
   );
 }
 
 export default function App() {
   return <Outlet />;
 }
+
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   let message = "Oops!";
