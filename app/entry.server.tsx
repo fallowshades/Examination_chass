@@ -14,6 +14,12 @@ import { NonceProvider } from './utils/nonce-provider'
 import { makeTimings } from './utils/timing.server'
 
 import crypto from 'node:crypto'
+
+//basically dotenv
+init()
+global.ENV = getEnv()
+
+
 export const streamTimeout = 5_000;
 
 export default function handleRequest(
