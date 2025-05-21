@@ -1,12 +1,19 @@
+//
 import { PassThrough } from "node:stream";
-
 import type { AppLoadContext, EntryContext } from "react-router";
+//
 import { createReadableStreamFromReadable } from "@react-router/node";
 import { ServerRouter } from "react-router";
 import { isbot } from "isbot";
 import type { RenderToPipeableStreamOptions } from "react-dom/server";
 import { renderToPipeableStream } from "react-dom/server";
 
+//
+import { getEnv, init } from './utils/env.server'
+import { NonceProvider } from './utils/nonce-provider'
+import { makeTimings } from './utils/timing.server'
+
+import crypto from 'node:crypto'
 export const streamTimeout = 5_000;
 
 export default function handleRequest(
@@ -18,26 +25,37 @@ export default function handleRequest(
   // If you have middleware enabled:
   // loadContext: unstable_RouterContextProvider
 ) {
+
+
+  const nonce = crypto.randomBytes(16).toString('hex')
+  
   return new Promise((resolve, reject) => {
     let shellRendered = false;
     let userAgent = request.headers.get("user-agent");
-
+    const timings = makeTimings('render', 'renderToPipeableStream')
     // Ensure requests from bots and SPA Mode renders wait for all content to load before responding
     // https://react.dev/reference/react-dom/server/renderToPipeableStream#waiting-for-all-content-to-load-for-crawlers-and-static-generation
     let readyOption: keyof RenderToPipeableStreamOptions =
       (userAgent && isbot(userAgent)) || routerContext.isSpaMode
         ? "onAllReady"
         : "onShellReady";
+	// const callbackName = isbot(request.headers.get('user-agent'))
+	// 	? 'onAllReady'
+	// 	: 'onShellReady'
 
     const { pipe, abort } = renderToPipeableStream(
-      <ServerRouter context={routerContext} url={request.url} />,
+      <NonceProvider value={nonce}>
+        <ServerRouter context={routerContext} url={request.url} />
+      </NonceProvider>,
       {
         [readyOption]() {
           shellRendered = true;
           const body = new PassThrough();
           const stream = createReadableStreamFromReadable(body);
+          
 
           responseHeaders.set("Content-Type", "text/html");
+          responseHeaders.append('Server-Timing', timings.toString())
 
           resolve(
             new Response(stream, {
