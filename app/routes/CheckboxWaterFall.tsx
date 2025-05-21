@@ -104,7 +104,7 @@ const CheckboxWaterFall = ({ roomId }: { roomId: string; }) => {
 export default CheckboxWaterFall;
 
 
-import { GeneralErrorBoundary } from './GeneralErrorBoundary';
+import { GeneralErrorBoundary } from '~/routes/components/GeneralErrorBoundary';
 export function ErrorBoundary() {
 	return <GeneralErrorBoundary />
 }

@@ -33,10 +33,10 @@ import {
 import { FaChevronDown } from 'react-icons/fa'
 import { Button } from '~/components/ui/button';
 import { useState } from 'react'
-import { useSearchParams } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 
 import { useEffect } from 'react';
-import CheckboxWaterFall from './CheckboxWaterFall';
+//import CheckboxWaterFall from './CheckboxWaterFall';
 const CheckBoxMenu = ({ roomId = 'o' }: { roomId?: string; }) => {
     
     const r = roomId
@@ -54,17 +54,26 @@ const CheckBoxMenu = ({ roomId = 'o' }: { roomId?: string; }) => {
                       onClick={(e) => e.stopPropagation()}
 
         className=' rounded-full select-none  px-4 text-2xl bg-white text-chasBlue border-2 border-chasBlue hover:bg-chasB  focus-visible:outline-none data-[state=open]:bg-chasBlue data-[state=open]:text-white'>
-        <Button className='flex gap-2 text-base'>
+          <Button className='flex gap-2 text-base'>
+            	<Link
+						to={`/dashboard/${roomId}`}
+						// this is for progressive enhancement
+						onClick={(e) => e.preventDefault()}
+						className="flex items-center gap-2"
+					>
           {' '}
           <span>Se lediga timmar</span>
-          <FaChevronDown />
+              <FaChevronDown />
+              </Link>
         </Button>
       </DropdownMenuTrigger>
         <DropdownMenuContent
           className='mt-1 overflow-hidden rounded bg-[#ECE9E9]  p-2 text-left shadow' sideOffset={-1}>
-        {open && <CheckboxWaterFall
+          {/* {open &&
+            <CheckboxWaterFall
           roomId={r}
-        />}
+        />} */}
+          <p>open</p>
       </DropdownMenuContent>
     </DropdownMenu>
     )
