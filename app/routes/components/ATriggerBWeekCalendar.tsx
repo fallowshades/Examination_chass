@@ -23,7 +23,7 @@ import {
   useLocation, useNavigate, useSearchParams, Link, replace, useFetcher
   ,useSubmit
 } from 'react-router';
- import { useState } from 'react';
+ import { useState,useEffect } from 'react';
 const ATriggerBWeek = ({currentWeek}:{currentWeek:number}) => {
    let fetcher = useFetcher();
   const submit = useSubmit()
@@ -53,6 +53,12 @@ const ATriggerBWeek = ({currentWeek}:{currentWeek:number}) => {
   });
     handleSubmit(String(newWeek))  
   };
+//
+   useEffect(() => {
+    if (fetcher.type === 'init') {
+      fetcher.load(fetchPath)
+    }
+  }, [fetcher, fetchPath])
   //#endregion
 
   //#region evt handling defaults is imperatively handled

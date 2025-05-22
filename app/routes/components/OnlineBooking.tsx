@@ -17,7 +17,8 @@ const OnlineBooking = () => {
             </h5>
           </div>
           <div>
-              <Room roomDetails={rooms}/>
+        <Room roomDetails={rooms} />
+        
           </div >
            </div>
   )

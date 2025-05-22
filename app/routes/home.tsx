@@ -7,15 +7,7 @@ export function meta({}: Route.MetaArgs) {
     { name: "description", content: "Welcome to React Router!" },
   ];
 }
-function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
-function randomDelay(min: number = 1000, max: number = 2000): number {
-  const randomDelay = Math.floor(Math.random() * (max - min + 1)) + min;
-  console.log(randomDelay, "randomDelay");
-   return randomDelay
-}
  
 
 import { BIG_ROOMS, SMALL_ROOMS } from  '~/routes/components/config/constants'

@@ -33,8 +33,8 @@ const defaultState: TimeIntervalState = {
     console.log(dayOfWeek, weekOfYear, 'loader')
   const origin = url.origin;
   const pathname = url.pathname;//${weekOfYear}
-
-    return redirect(`/${url.origin}/${url.pathname}?week=3.&day=${dayOfWeek}&total=10`);
+//${url.origin &&('/' +url.origin)}
+    return redirect(`${url.pathname}?week=3.&day=${dayOfWeek}&total=10`);
   }
 
   // Don't redirect again; just return something or null

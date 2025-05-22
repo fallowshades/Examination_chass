@@ -33,16 +33,15 @@ import {
 import { FaChevronDown } from 'react-icons/fa'
 import { Button } from '~/components/ui/button';
 import { useState } from 'react'
-import { Link, useSearchParams } from 'react-router';
+import { Link, useSearchParams,Outlet } from 'react-router';
 
 import { useEffect } from 'react';
-//import CheckboxWaterFall from './CheckboxWaterFall';
+import CheckboxWaterFall from './CheckboxWaterFall';
+import AsyncFetcher from './AsyncFetcher';
 const CheckBoxMenu = ({ roomId = 'o' }: { roomId?: string; }) => {
     
     const r = roomId
-    const [open, setOpen] = useState<boolean>(false)
-    
-    
+    const [open, setOpen] = useState<boolean>(false)    
     return (
          <DropdownMenu
       modal={false}
@@ -58,7 +57,7 @@ const CheckBoxMenu = ({ roomId = 'o' }: { roomId?: string; }) => {
             	<Link
 						to={`/dashboard/${roomId}`}
 						// this is for progressive enhancement
-						onClick={(e) => e.preventDefault()}
+						
 						className="flex items-center gap-2"
 					>
           {' '}
@@ -74,6 +73,19 @@ const CheckBoxMenu = ({ roomId = 'o' }: { roomId?: string; }) => {
           roomId={r}
         />} */}
           <p>open</p>
+          <Outlet />
+          {/* <AsyncFetcher<any[]>
+        url="/resources/"
+        render={({
+          loading,
+          error,
+          data,
+        }: {
+          loading: boolean;
+          error?: string;
+          data?: any[];
+        }) => ( <div>test</div>)}
+/> */}
       </DropdownMenuContent>
     </DropdownMenu>
     )
