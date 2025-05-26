@@ -54,11 +54,7 @@ const ATriggerBWeek = ({currentWeek}:{currentWeek:number}) => {
     handleSubmit(String(newWeek))  
   };
 //
-   useEffect(() => {
-    if (fetcher.type === 'init') {
-      fetcher.load(fetchPath)
-    }
-  }, [fetcher, fetchPath])
+ 
   //#endregion
 
   //#region evt handling defaults is imperatively handled

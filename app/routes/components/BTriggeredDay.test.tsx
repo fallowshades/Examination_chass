@@ -1,0 +1,1 @@
+// effect for shared week state does not seem to work inside, need to rerender in parent as reload.

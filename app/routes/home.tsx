@@ -68,6 +68,7 @@ export async function clientLoader({
   console.log("serverData", serverData);
   return { ...serverData, params };
 }
+
 // export async function loader() {
 //   return defer({
 //     smallA: delay(randomDelay()).then(() => SMALL_ROOMS),
