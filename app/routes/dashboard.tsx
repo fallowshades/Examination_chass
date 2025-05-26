@@ -40,6 +40,18 @@ const defaultState: TimeIntervalState = {
   // Don't redirect again; just return something or null
   return null;
 }
+
+
+export async function clientLoader({
+  serverLoader,
+  params,
+}: Route.ClientLoaderArgs) {
+  ;
+  const serverData = await serverLoader();
+  console.log("serverData", serverData);
+  return { serverData, params };
+}
+clientLoader.hydrate = false
 //   cashe.set("key", JSON.stringify(serverData))
 //   return null
 // }
@@ -89,6 +101,7 @@ export default function dashboard({ loaderData }: { loaderData: { week: string; 
   console.log(data, 'loaderData')
     let fetcher = useFetcher();
   const [searchParams, setSearchParams] = useSearchParams();
+   const week = Number(searchParams.get('week')) || 1
   /**
    * BTriggeredDay bypass spa experience and full page load.
    * @param e 
@@ -125,9 +138,9 @@ export default function dashboard({ loaderData }: { loaderData: { week: string; 
     const updatedParams = new URLSearchParams(searchParams);
     updatedParams.set('week', updatedWeekStr);
    
-      setState(fetcher.data.updatedWeek);
-       setSearchParams(updatedParams);
-    navigate(`?${updatedParams.toString()}`, { replace: true });
+      // setState(fetcher.data.updatedWeek);
+      //  setSearchParams(updatedParams);
+    // navigate(`?${updatedParams.toString()}`, { replace: true });
       
       }
     }, [fetcher.data]);
@@ -139,20 +152,25 @@ export default function dashboard({ loaderData }: { loaderData: { week: string; 
      console.log(JSON.stringify(fetcher.data), 'fetcher')
     const MemoizedOutlet = React.memo(() => <Outlet />);
         return (
-            <>
-                <div className='pt-7'>
-      
-                   
-                        <ATriggerBWeek key={state}  currentWeek={state}/>
-                   
-                    <fetcher.Form
-                        method='POST'
-                        onSubmit={handleSubmit}
-                    >
-                        <BTriggeredDay key={state}  week={state} />
-                    </fetcher.Form>
-                </div>
-                <div><MemoizedOutlet/></div>
-            </>
-        );
+          <>
+            <div className='pt-7'>
+              <ATriggerBWeek
+                key={state}
+                currentWeek={week ||state}
+              />
+
+              <fetcher.Form
+                method='POST'
+                onSubmit={handleSubmit}>
+                <BTriggeredDay
+                  key={state}
+                  week={week ||state}
+                />
+              </fetcher.Form>
+            </div>
+            <div>
+              <MemoizedOutlet />
+            </div>
+          </>
+        )
     };

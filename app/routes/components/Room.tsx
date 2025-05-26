@@ -6,18 +6,22 @@ const Room = ({ roomDetails }: { roomDetails: RoomType; }) => {
     return <div>Room data is unavailable</div>; // Handle missing data gracefully
   }
   return (
+    <div className='flex flex-row gap-2 justify-around items-center min-h-[200px] lg:min-h-[110px]'>
       <div>
-          <div>
-              <img src={roomDetails?.image} alt="rooom" className='basis-sm grow-2' />
-          </div>
-          {/**1st box */}
-          <div className="space-y-1">
-              <h6>{roomDetails?.title}</h6>
-              <p>
-                  {roomDetails?.capacity}
-              </p>
-          </div>
-          <CheckBoxMenu roomId={roomDetails?.id} />
+        <img
+          src={roomDetails?.image}
+          alt='rooom'
+          className='basis-sm grow-1 max-w-[200px]'
+        />
+      </div>
+      {/**1st box */}
+      <div className='space-y-1'>
+        <h6>{roomDetails?.title}</h6>
+        <p className='min-w-[20ch] max-w-[20ch] break-words '>
+          {roomDetails?.capacity}
+        </p>
+      </div>
+      <CheckBoxMenu roomId={roomDetails?.id} />
     </div>
   )
 }
@@ -32,13 +36,19 @@ import {
 } from '~/components/ui/dropdown-menu'
 import { FaChevronDown } from 'react-icons/fa'
 import { Button } from '~/components/ui/button';
-import { useState } from 'react'
+import { useState ,lazy} from 'react'
 import { Link, useSearchParams,Outlet } from 'react-router';
 
 import { useEffect } from 'react';
 import CheckboxWaterFall from './CheckboxWaterFall';
-import AsyncFetcher from './AsyncFetcher';
+// import AsyncFetcher from './AsyncFetcher';
+
+// const AsyncFetcher = lazy(() => import('./AsyncFetcher'))
+
+import { useParams } from 'react-router';
 const CheckBoxMenu = ({ roomId = 'o' }: { roomId?: string; }) => {
+  const { selectedUser } = useParams()
+  console.log(selectedUser)
     
     const r = roomId
     const [open, setOpen] = useState<boolean>(false)    
@@ -53,9 +63,9 @@ const CheckBoxMenu = ({ roomId = 'o' }: { roomId?: string; }) => {
                       onClick={(e) => e.stopPropagation()}
 
         className=' rounded-full select-none  px-4 text-2xl bg-white text-chasBlue border-2 border-chasBlue hover:bg-chasB  focus-visible:outline-none data-[state=open]:bg-chasBlue data-[state=open]:text-white'>
-          <Button className='flex gap-2 text-base'>
+         
             	<Link
-						to={`/dashboard/${roomId}`}
+						to={`/${selectedUser}/${roomId}`}
 						// this is for progressive enhancement
 						
 						className="flex items-center gap-2"
@@ -64,7 +74,7 @@ const CheckBoxMenu = ({ roomId = 'o' }: { roomId?: string; }) => {
           <span>Se lediga timmar</span>
               <FaChevronDown />
               </Link>
-        </Button>
+      
       </DropdownMenuTrigger>
         <DropdownMenuContent
           className='mt-1 overflow-hidden rounded bg-[#ECE9E9]  p-2 text-left shadow' sideOffset={-1}>
