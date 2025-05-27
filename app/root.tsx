@@ -131,7 +131,10 @@ function Document({
         <script
           nonce={nonce}
           dangerouslySetInnerHTML={{
-            __html: `window.ENV = ${JSON.stringify(env)}`,
+            __html: `window.__nonce = "${nonce}"; window.ENV = ${JSON.stringify(
+              env
+            )};`,
+            // __html: `window.ENV = ${JSON.stringify(env)}`,
           }}
         />
         <ScrollRestoration nonce={nonce} />

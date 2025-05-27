@@ -14,7 +14,7 @@ export default [
   layout('routes/_layout.tsx', [
     route('/', 'routes/dashboard.tsx', [
       index('routes/homeIndex.tsx'),
-      route('/:selectedUser', 'routes/home.tsx', [
+      route('/:userId', 'routes/home.tsx', [
         route(':dates', 'routes/dashboard.dates.tsx'),
       ]),
 
