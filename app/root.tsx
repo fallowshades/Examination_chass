@@ -29,6 +29,8 @@ import { getUserId, logout } from "./utils/auth.server";
 import { ClientHintCheck } from './utils/client-hints';
 import { getEnv } from "./utils/env.server";
 import { combineHeaders } from "./utils/misc";
+
+
 export async function loader({ request }: Route.LoaderArgs) {
 	const timings = makeTimings('root loader')
 	const userId = await time(() => getUserId(request), {
@@ -105,30 +107,38 @@ function Document({
 }) {
 	const allowIndexing = env.ALLOW_INDEXING !== 'false';
 	return (
-		<html lang="en" className={`${theme} h-full overflow-x-hidden`}>
-			<head>
-				<ClientHintCheck nonce={nonce} />
-				<Meta />
-				<meta charSet="utf-8" />
-				<meta name="viewport" content="width=device-width,initial-scale=1" />
-				{allowIndexing ? null : (
-					<meta name="robots" content="noindex, nofollow" />
-				)}
-				<Links />
-			</head>
-			<body className="bg-background text-foreground">
-				{children}
-				<script
-					nonce={nonce}
-					dangerouslySetInnerHTML={{
-						__html: `window.ENV = ${JSON.stringify(env)}`,
-					}}
-				/>
-				<ScrollRestoration nonce={nonce} />
-				<Scripts nonce={nonce} />
-			</body>
-		</html>
-	);
+    <html
+      lang='en'
+      className={`${theme} h-full overflow-x-hidden`}>
+      <head>
+        <ClientHintCheck nonce={nonce} />
+        <Meta />
+        <meta charSet='utf-8' />
+        <meta
+          name='viewport'
+          content='width=device-width,initial-scale=1'
+        />
+        {allowIndexing ? null : (
+          <meta
+            name='robots'
+            content='noindex, nofollow'
+          />
+        )}
+        <Links />
+      </head>
+      <body className='bg-background text-foreground'>
+        {children}
+        <script
+          nonce={nonce}
+          dangerouslySetInnerHTML={{
+            __html: `window.ENV = ${JSON.stringify(env)}`,
+          }}
+        />
+        <ScrollRestoration nonce={nonce} />
+        <Scripts nonce={nonce || undefined} />
+      </body>
+    </html>
+  )
 }
 import { useLoaderData } from "react-router";
 import { useNonce } from "./utils/nonce-provider";

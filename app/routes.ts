@@ -13,8 +13,11 @@ import {route,layout, type RouteConfig, index ,prefix} from "@react-router/dev/r
 export default [
   layout('routes/_layout.tsx', [
     route('/', 'routes/dashboard.tsx', [
-      index('routes/home.tsx'),
-      route('/:dates', 'routes/dashboard.dates.tsx'),
+      index('routes/homeIndex.tsx'),
+      route('/:selectedUser', 'routes/home.tsx', [
+        route(':dates', 'routes/dashboard.dates.tsx'),
+      ]),
+
       route('/:id', 'routes/CheckboxWaterFall.tsx'),
     ]),
 
@@ -22,7 +25,6 @@ export default [
 
     route('*', 'routes/_errors/404.tsx'),
   ]),
-  ...prefix('transaction', [index('routes/home.tsx')]),
 ] satisfies RouteConfig
 
 //  {
