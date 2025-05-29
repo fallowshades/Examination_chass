@@ -167,15 +167,15 @@ function Document({
       </head>
       <body className='bg-background text-foreground'>
         {children}
-        <script
-          nonce={process.env.NODE_ENV === 'production' ? nonce : undefined}
+        {/* <script
+          nonce={process.env.NODE_ENV === 'production' ? nonce : nonce}
           dangerouslySetInnerHTML={{
             __html: `window.__nonce = "${nonce}"; window.ENV = ${JSON.stringify(
               env
             )};`,
             // __html: `window.ENV = ${JSON.stringify(env)}`,
           }}
-        />
+        /> */}
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce || undefined} />
       </body>
@@ -209,9 +209,28 @@ export function Layout({ children }: { children: React.ReactNode; }) {
     // </html>
   );
 }
+import { NonceProvider } from './utils/nonce-provider'
+declare global {
+  interface Window {
+    __nonce?: string;
+  }
+}
 
-export default function App() {
-  return <Outlet />;
+export default function App({
+  children,
+  serverNonce,
+}: {
+  children: React.ReactNode
+  serverNonce: string
+}) {
+  const nonce =
+    typeof window === 'undefined' ? serverNonce : window.__nonce || ''
+
+  return (
+    <NonceProvider value={nonce}>
+      <Outlet />
+    </NonceProvider>
+  )
 }
 
 

@@ -3,3 +3,4 @@
 
 [get-all|category] https://sergiodxa.com/articles/optional-route-segments-with-remix
 
+- basically a dictionary
