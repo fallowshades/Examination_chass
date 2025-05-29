@@ -9,7 +9,9 @@ import {
 } from 'react-router'
 import { Button } from '~/components/ui/button';
 import FormSelect from '~/components/ui/FormSelect';
-import { getTimeOptions } from './_layout/query.server';
+import { getTimeOptions } from './query.server';
+
+
 export async function loader({ request }: LoaderFunctionArgs) {
     let { searchParams } = new URL(request.url);
       let query = searchParams.get('query')
@@ -73,7 +75,7 @@ export default function Layout({
         {/* col 1 */}
         <div className='flex flex-col gap-4 max-w-[200px] justify-center items-center  mx-auto w-full'>
           <FormSelect
-            labelText='select category'
+            labelText='select '
             name='user'
             list={userMeta.map((meta) => {
               return { label: meta, value: meta }
