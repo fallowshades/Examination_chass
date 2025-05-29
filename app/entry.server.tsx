@@ -92,3 +92,28 @@ export default function handleRequest(
     setTimeout(abort, streamTimeout + 1000);
   });
 }
+import {
+ 
+  type LoaderFunctionArgs,
+  type ActionFunctionArgs,
+  type HandleDocumentRequestFunction,
+} from 'react-router'
+import { styleText } from 'node:util'
+export function handleError(
+  error: unknown,
+  { request }: LoaderFunctionArgs | ActionFunctionArgs
+): void {
+  // Skip capturing if the request is aborted as Remix docs suggest
+  // Ref: https://remix.run/docs/en/main/file-conventions/entry.server#handleerror
+  if (request.signal.aborted) {
+    return
+  }
+
+  if (error instanceof Error) {
+    console.error(styleText('red', String(error.stack)))
+  } else {
+    console.error(error)
+  }
+
+
+}

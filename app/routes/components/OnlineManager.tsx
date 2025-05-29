@@ -72,12 +72,31 @@ export function OnlineManager() {
   const visible = useVisibilityState();
   const speed = useConnectionSpeed();
 
-  useEffect(() => {
-    if (!online || visible === "hidden") return;
+  // useEffect(() => {
+  //   if (!online || visible === "hidden") return;
 
-    const interval = setInterval(revalidate, speed === "4g" ? 1000 : 5000);
-    return () => clearInterval(interval);
-  }, [online, visible, speed, revalidate]);
+  //   const interval = setInterval(revalidate, speed === "4g" ? 1000 : 5000);
+  //   return () => clearInterval(interval);
+  // }, [online, visible, speed, revalidate]);
 
   return null;
 }
+
+import type { ShouldRevalidateFunction } from 'react-router'
+
+//**
+// * mb root also need logic for revalidation, hihger up in stack
+// * @param param0 https://akamfoad.dev/blog/remix-should-revalidate
+// * @returns 
+//**;
+//
+
+// export const shouldRevalidate: ShouldRevalidateFunction = ({
+//   defaultShouldRevalidate,
+// }) => {
+//   if ('onLine' in navigator && navigator.onLine === false) {
+//     return false
+//   }
+
+//   return defaultShouldRevalidate
+// }

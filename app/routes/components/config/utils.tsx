@@ -110,3 +110,14 @@ export function formatWithPadding(day: string, baseDate: Date, offset: number) {
 //         activeClass: currentWeek === totalWeeks,
 //       })
 //     );
+
+
+// function delay(ms: number) {
+//   return new Promise((resolve) => setTimeout(resolve, ms));
+// }
+
+// function randomDelay(min: number = 1000, max: number = 2000): number {
+//   const randomDelay = Math.floor(Math.random() * (max - min + 1)) + min;
+//   console.log(randomDelay, "randomDelay");
+//    return randomDelay
+// }

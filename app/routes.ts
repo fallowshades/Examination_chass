@@ -1,5 +1,5 @@
 
-import {route,layout, type RouteConfig, index } from "@react-router/dev/routes";
+import {route,layout, type RouteConfig, index ,prefix} from "@react-router/dev/routes";
 
 // lazy: () => import("~/routes/_")
 // element: <MainLayout /> 
@@ -11,19 +11,21 @@ import {route,layout, type RouteConfig, index } from "@react-router/dev/routes";
 //     ],
 //   }
 export default [
-     layout("routes/_layout.tsx", [  
-    route("/", "routes/dashboard.tsx", [
-         
-          index("routes/home.tsx"),
-           route("/:dates", "routes/dashboard.dates.tsx"),
-          route("/:id", "routes/CheckboxWaterFall.tsx")
-    ]),
-         
-          route("/viewBookings/:id", "routes/ViewBookings.tsx"),
-  route("*", "routes/_errors/404.tsx"),
-  ]),
+  layout('routes/_layout.tsx', [
+    route('/', 'routes/dashboard.tsx', [
+      index('routes/homeIndex.tsx'),
+      route('/:userId', 'routes/home.tsx', [
+        route(':dates', 'routes/dashboard.dates.tsx'),
+      ]),
 
-] satisfies RouteConfig;
+      route('/:id', 'routes/CheckboxWaterFall.tsx'),
+    ]),
+
+    route('/viewBookings/:id', 'routes/ViewBookings.tsx'),
+
+    route('*', 'routes/_errors/404.tsx'),
+  ]),
+] satisfies RouteConfig
 
 //  {
         //   ignoredRouteFiles: ['**/.*'], // Ignore dot files (like .DS_Store)

@@ -23,7 +23,7 @@ import {
   useLocation, useNavigate, useSearchParams, Link, replace, useFetcher
   ,useSubmit
 } from 'react-router';
- import { useState } from 'react';
+ import { useState,useEffect } from 'react';
 const ATriggerBWeek = ({currentWeek}:{currentWeek:number}) => {
    let fetcher = useFetcher();
   const submit = useSubmit()
@@ -53,6 +53,8 @@ const ATriggerBWeek = ({currentWeek}:{currentWeek:number}) => {
   });
     handleSubmit(String(newWeek))  
   };
+//
+ 
   //#endregion
 
   //#region evt handling defaults is imperatively handled
@@ -133,6 +135,3 @@ const ATriggerBWeek = ({currentWeek}:{currentWeek:number}) => {
 export default ATriggerBWeek
 
 
-/**
- * could possibly have links https://stackblitz.com/edit/remix-run-remix-yy9xue?file=app%2Froutes%2Fparent.child.tsx 
- */

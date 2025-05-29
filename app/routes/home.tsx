@@ -7,15 +7,7 @@ export function meta({}: Route.MetaArgs) {
     { name: "description", content: "Welcome to React Router!" },
   ];
 }
-function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
-function randomDelay(min: number = 1000, max: number = 2000): number {
-  const randomDelay = Math.floor(Math.random() * (max - min + 1)) + min;
-  console.log(randomDelay, "randomDelay");
-   return randomDelay
-}
  
 
 import { BIG_ROOMS, SMALL_ROOMS } from  '~/routes/components/config/constants'
@@ -66,16 +58,19 @@ export async function loader({ params }: Route.LoaderArgs) {
 
 // import { defer } from "react-router-dom"
 
-
+clientLoader.hydrate = false
+let cashe: Record<string, unknown> | undefined;
 export async function clientLoader({
   serverLoader,
   params,
 }: Route.ClientLoaderArgs) {
-  ;
+  if (cashe) return { ...cashe }
   const serverData = await serverLoader();
+  cashe = serverData
   console.log("serverData", serverData);
   return { ...serverData, params };
 }
+
 // export async function loader() {
 //   return defer({
 //     smallA: delay(randomDelay()).then(() => SMALL_ROOMS),
@@ -99,7 +94,7 @@ export function ErrorComponent({ error }: { error?: any }) {
   }
   return <div>Unexpected error occurred</div>;
 }
-
+import {type  RoomType } from "~/routes/components/config/constants";
 export default function Home({
   loaderData,
 }: Route.ComponentProps) {
@@ -113,7 +108,7 @@ export default function Home({
       <Suspense fallback={<HydrateFallback />}>
          <Await resolve={Promise.all([bigB, smallA])} errorElement={<ErrorComponent />}>
     {([resolvedBigB, resolvedSmallA]) => {
-      const grouped = groupRooms(resolvedBigB, resolvedSmallA);
+      const grouped = groupRooms(resolvedBigB as RoomType[] | undefined, resolvedSmallA as RoomType[] | undefined);
       return (
         <>
           {grouped.map((layer, i) => (

@@ -1,22 +1,31 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import { getFirstDateOfISOWeek,formatWithPadding } from '~/routes/components/config/utils';
-const BTriggeredDay = ({week}:{week:number}) => {
-   const [currentItem, setCurrentItem] = useState<number>(0)
-  const dayOfWeek = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag']
-  const [daysWithDates, setDaysWithDates] = useState<string[]>(dayOfWeek);
-  
-  
-  
-    useEffect(() => {
-    const currentYear = new Date().getFullYear();
-    const monday = getFirstDateOfISOWeek({year:currentYear, week});
+import { getFirstDateOfISOWeek, formatWithPadding } from '~/routes/components/config/utils';
+import { useSearchParams } from 'react-router'
+function getWeekFromUrl(): number {
+  const params = new URLSearchParams(window.location.search)
+  const w = Number(params.get('week'))
+  return Number.isNaN(w) ? 1 : w
+}
 
-      const daysWithDatesArray = dayOfWeek.map((day, index) => formatWithPadding(day, monday, index));
-      console.log(daysWithDatesArray, 'daysWithDatesArray')
-    setDaysWithDates(daysWithDatesArray);
-  }, [week]);
-   
+const BTriggeredDay = ({week}:{week:number}) => {
+  const [currentItem, setCurrentItem] = useState<number>(0)
+  const dayOfWeek = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag']
+  const [daysWithDates, setDaysWithDates] = useState<string[]>(dayOfWeek)
+
+  //const [searchParams, setSearchParams] = useSearchParams()
+
+  useEffect(() => {
+    const currentYear = new Date().getFullYear()
+    const monday = getFirstDateOfISOWeek({ year: currentYear, week })
+
+    const daysWithDatesArray = dayOfWeek.map((day, index) =>
+      formatWithPadding(day, monday, index)
+    )
+    console.log(daysWithDatesArray, 'daysWithDatesArray')
+    setDaysWithDates(daysWithDatesArray)
+  }, [week]) //, searchParams.toString()
+
   return (
     <div className='flex justify-center '>
       <input
