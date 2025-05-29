@@ -133,6 +133,3 @@ const ATriggerBWeek = ({currentWeek}:{currentWeek:number}) => {
 export default ATriggerBWeek
 
 
-/**
- * could possibly have links https://stackblitz.com/edit/remix-run-remix-yy9xue?file=app%2Froutes%2Fparent.child.tsx 
- */

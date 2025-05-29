@@ -5,58 +5,24 @@ import {
   Outlet,
   Scripts,
 	ScrollRestoration,
-  data,
-  type ShouldRevalidateFunction,
-  type HeadersFunction
+  data
 } from "react-router";
 
 import type { Route } from "./+types/root";
 import "./app.css";
 
-/**
- * shouldRevalidate: data from remote container
- * links
- * lloader
- * Document
- * Layout
- * App
- * ErrorBoundary
- * @returns 
- * 
- */
-
-// export const shouldRevalidate: ShouldRevalidateFunction = ({
-//   defaultShouldRevalidate,
-// }) => {
-//   if ('onLine' in navigator && navigator.onLine === false) {
-//     return false
-//   }
-
-//   return defaultShouldRevalidate
-// }
-
-/***
- * can preload svg sprite.
-*/
-// import { href as iconsHref } from '~/components/ui/icon'
 export const links: Route.LinksFunction = () => [
-  // { rel: 'preload', href: iconsHref, as: 'image' },
-  { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+  { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
-    rel: 'preconnect',
-    href: 'https://fonts.gstatic.com',
-    crossOrigin: 'anonymous',
+    rel: "preconnect",
+    href: "https://fonts.gstatic.com",
+    crossOrigin: "anonymous",
   },
-  // {
-  //   rel: 'manifest',
-  //   href: '/site.webmanifest',
-  //   crossOrigin: 'use-credentials',
-  // } as const, // necessary to make typescript happy
   {
-    rel: 'stylesheet',
-    href: 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap',
+    rel: "stylesheet",
+    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
-]
+];
 
 import { makeTimings, time } from "./utils/timing.server";
 import { getUserId, logout } from "./utils/auth.server";
@@ -64,11 +30,6 @@ import { ClientHintCheck } from './utils/client-hints';
 import { getEnv } from "./utils/env.server";
 import { combineHeaders } from "./utils/misc";
 
-export let headers: HeadersFunction = () => {
-  return {
-    'Cache-Control': 'public, s-maxage=60',
-  }
-}
 
 export async function loader({ request }: Route.LoaderArgs) {
 	const timings = makeTimings('root loader')
@@ -168,7 +129,7 @@ function Document({
       <body className='bg-background text-foreground'>
         {children}
         <script
-          nonce={process.env.NODE_ENV === 'production' ? nonce : undefined}
+          nonce={nonce}
           dangerouslySetInnerHTML={{
             __html: `window.__nonce = "${nonce}"; window.ENV = ${JSON.stringify(
               env

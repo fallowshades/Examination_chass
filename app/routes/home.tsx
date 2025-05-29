@@ -58,15 +58,13 @@ export async function loader({ params }: Route.LoaderArgs) {
 
 // import { defer } from "react-router-dom"
 
-clientLoader.hydrate = false
-let cashe: Record<string, unknown> | undefined;
+
 export async function clientLoader({
   serverLoader,
   params,
 }: Route.ClientLoaderArgs) {
-  if (cashe) return { ...cashe }
+  ;
   const serverData = await serverLoader();
-  cashe = serverData
   console.log("serverData", serverData);
   return { ...serverData, params };
 }
@@ -94,7 +92,7 @@ export function ErrorComponent({ error }: { error?: any }) {
   }
   return <div>Unexpected error occurred</div>;
 }
-import {type  RoomType } from "~/routes/components/config/constants";
+
 export default function Home({
   loaderData,
 }: Route.ComponentProps) {
@@ -108,7 +106,7 @@ export default function Home({
       <Suspense fallback={<HydrateFallback />}>
          <Await resolve={Promise.all([bigB, smallA])} errorElement={<ErrorComponent />}>
     {([resolvedBigB, resolvedSmallA]) => {
-      const grouped = groupRooms(resolvedBigB as RoomType[] | undefined, resolvedSmallA as RoomType[] | undefined);
+      const grouped = groupRooms(resolvedBigB, resolvedSmallA);
       return (
         <>
           {grouped.map((layer, i) => (
