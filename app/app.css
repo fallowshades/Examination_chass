@@ -15,11 +15,7 @@ body {
   @media (prefers-color-scheme: dark) {
     color-scheme: dark;
   }
-   overflow-y: scroll;
 }
-
-
-
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
