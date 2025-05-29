@@ -1,6 +1,6 @@
 import { type ComponentType, type SVGProps, isValidElement } from 'react'
 import { cn } from '~/lib/utils';
-import href from './icons/sprite.svg'
+import href from './icons/vite.svg'
 import { MdMoreTime as IconName} from "react-icons/md";
 
 export { href }
