@@ -151,7 +151,7 @@ export default function Home({
 </Suspense>
       </div>
       <div className='p-4 flex justify-center'>
-        <div className=' border-t  border-chasBlue'>
+        <div className=' border-t '>
           <OnlineBooking />
         </div>
       </div>
