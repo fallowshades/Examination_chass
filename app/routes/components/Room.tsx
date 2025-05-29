@@ -40,7 +40,7 @@ import { useState ,lazy} from 'react'
 import { Link, useSearchParams,Outlet } from 'react-router';
 
 import { useEffect } from 'react';
-import CheckboxWaterFall from './CheckboxWaterFall';
+// import CheckboxWaterFall from './CheckboxWaterFall';
 // import AsyncFetcher from './AsyncFetcher';
 
 // const AsyncFetcher = lazy(() => import('./AsyncFetcher'))

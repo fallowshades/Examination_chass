@@ -12,14 +12,14 @@ export default function SearchContainer() {
      return searchParams.get('query') ?? ''
    })
 
-   let deferredValue = useDeferredValue(value)
+//    let deferredValue = useDeferredValue(value)
 
-   useEffect(() => {
-     setSearchParams({ query: deferredValue })
-   }, [deferredValue, setSearchParams])
-useEffect(() => {
-  console.log('Search param changed to:', deferredValue)
-}, [deferredValue])
+//    useEffect(() => {
+//      setSearchParams({ query: deferredValue })
+//    }, [deferredValue, setSearchParams])
+// useEffect(() => {
+//   console.log('Search param changed to:', deferredValue)
+// }, [deferredValue])
    return (
      <div>
        
