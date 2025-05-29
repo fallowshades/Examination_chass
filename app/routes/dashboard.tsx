@@ -6,7 +6,7 @@ import { useFetcher } from 'react-router';
 import ATriggerBWeek from './components/ATriggerBWeek';
 import BTriggeredDay from './components/BTriggeredDay';
 import {  parseQueryParams } from '~/routes/components/config'
-import { performMutation } from './queries.server'; // Import your mutation function
+// import { performMutation } from './queries.server'; // Import your mutation function
 import { z } from 'zod'
 export const formSchema = z.object({
   week: z
@@ -85,9 +85,10 @@ export async function action({ request }: { request: Request; }) {
       values[key] = value;
     }
   }
-console.log(values, 'values')
-  let updatedData = await performMutation(values); // This could mutate a part of the object
-  console.log(updatedData,'"action')
+  console.log(values, 'values')
+  const updatedData =null
+  // let updatedData = await performMutation(values); // This could mutate a part of the object
+  // console.log(updatedData,'"action')
     // Return a response (e.g., JSON or redirect)
     // const updatedWeek = parseInt(formData.get('newWeek') as string, 10) || 1;
     const rawWeek = formData.get('newWeek');

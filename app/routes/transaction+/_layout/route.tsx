@@ -9,7 +9,7 @@ import {
 } from 'react-router'
 import { Button } from '~/components/ui/button';
 import FormSelect from '~/components/ui/FormSelect';
-import { getTimeOptions } from './query.server';
+import { getTimeOptions } from './queries.server';
 
 
 export async function loader({ request }: LoaderFunctionArgs) {
