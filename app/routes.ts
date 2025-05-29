@@ -11,7 +11,7 @@ import {route,layout, type RouteConfig, index ,prefix} from "@react-router/dev/r
 //     ],
 //   }
 export default [
-  layout('routes/_layout+/route.tsx', [
+  layout('routes/transaction+/_layout/route.tsx', [
     route('/', 'routes/dashboard.tsx', [
       index('routes/homeIndex.tsx'),
       route('/:userId', 'routes/home.tsx', [
@@ -22,10 +22,15 @@ export default [
     ]),
 
     route('/viewBookings/:id', 'routes/ViewBookings.tsx'),
-
+    route('codeBasedRoutingNoCollocatedModules','routes/_layout.tsx'),
     route('*', 'routes/_errors/404.tsx'),
   ]),
 ] satisfies RouteConfig
+
+// import { flatRoutes } from '@react-router/fs-routes'
+
+// export default flatRoutes() satisfies RouteConfig
+
 
 //  {
         //   ignoredRouteFiles: ['**/.*'], // Ignore dot files (like .DS_Store)
