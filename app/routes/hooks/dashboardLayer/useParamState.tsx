@@ -9,7 +9,7 @@
 
 //github.com/asmyshlyaev177/state-in-url?tab=readme-ov-file
 
-https: import { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useSearchParams } from 'react-router'
 
 /**
@@ -41,7 +41,7 @@ function useParamState<T extends string | number | boolean | object>(
     (newValue: Partial<T> | T) => {
       const updatedValue =
         typeof newValue === 'object' && !Array.isArray(newValue)
-          ? { ...state, ...(typeof newValue === 'object' && newValue !== null ? (newValue as object) : {}) }
+          ? { ...(typeof state === 'object' && state !== null ? state : {}), ...(typeof newValue === 'object' && newValue !== null ? newValue : {}) }
           : newValue
 
       setState(updatedValue as T)
@@ -68,15 +68,26 @@ export default useParamState
  * @param {string} key 
  * @param {string} value 
  */
-export function removeExistingParamsArrayValue(searchParams, key, value) {
-  const existingParams = extractExistingParams(searchParams);
-  if (existingParams[key]) {
-    existingParams[key] = existingParams[key].filter(v => v !== value);
-  }
-  if (existingParams[key].length === 0) {
-    delete existingParams[key];
-  }
-  return existingParams;
+interface RemoveParamsOptions {
+  searchParams: URLSearchParams;
+  key: string;
+  value: string;
+}
+
+export function removeExistingParamsArrayValue(
+  searchParams: URLSearchParams,
+  key: string,
+  value: string
+): void {
+  console.log(searchParams, key, value);
+  // const existingParams = extractExistingParams(searchParams);
+  // if (existingParams[key]) {
+  //   existingParams[key] = existingParams[key].filter(v => v !== value);
+  // }
+  // if (existingParams[key].length === 0) {
+  //   delete existingParams[key];
+  // }
+  // return existingParams;
 }
 
 //array

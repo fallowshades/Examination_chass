@@ -1,6 +1,6 @@
 import React, { useEffect,useState } from 'react'
 import { Outlet, useNavigate } from 'react-router'
-import type { Route } from "./+types/_layout";
+import type { Route } from "./+types/_layout+";
 import {
   useFetcher,
   useSubmit,
