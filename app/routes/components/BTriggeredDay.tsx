@@ -2,18 +2,14 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import { getFirstDateOfISOWeek, formatWithPadding } from '~/routes/components/config/utils';
 import { useSearchParams } from 'react-router'
-function getWeekFromUrl(): number {
-  const params = new URLSearchParams(window.location.search)
-  const w = Number(params.get('week'))
-  return Number.isNaN(w) ? 1 : w
-}
+
 
 const BTriggeredDay = ({week}:{week:number}) => {
   const [currentItem, setCurrentItem] = useState<number>(0)
   const dayOfWeek = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag']
   const [daysWithDates, setDaysWithDates] = useState<string[]>(dayOfWeek)
 
-  //const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
 
   useEffect(() => {
     const currentYear = new Date().getFullYear()
@@ -23,8 +19,10 @@ const BTriggeredDay = ({week}:{week:number}) => {
       formatWithPadding(day, monday, index)
     )
     console.log(daysWithDatesArray, 'daysWithDatesArray')
+       
     setDaysWithDates(daysWithDatesArray)
   }, [week]) //, searchParams.toString()
+
 
   return (
     <div className='flex justify-center '>
@@ -46,7 +44,14 @@ const BTriggeredDay = ({week}:{week:number}) => {
             <button
               type='submit'
               key={index}
-              onClick={() => setCurrentItem(index)}
+              onClick={() => {
+ setSearchParams((prev) => {
+   const updated = new URLSearchParams(prev)
+   updated.set('day', String(index+1))
+   return updated
+ })
+                setCurrentItem(index)
+              }}
               className={`flex-1 min-w-[20%]  h-[56px] flex-grow tab  ${
                 index === currentItem
                   ? 'bg-black text-white [--tab-bg:#2B2F2F] [--tab-border-color:white]'
@@ -61,4 +66,10 @@ const BTriggeredDay = ({week}:{week:number}) => {
   )
 }
 
-export default BTriggeredDay
+export default BTriggeredDay;
+
+// function getWeekFromUrl(): number {
+//   const params = new URLSearchParams(window.location.search)
+//   const w = Number(params.get('week'))
+//   return Number.isNaN(w) ? 1 : w
+// }

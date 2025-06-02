@@ -2,7 +2,7 @@
 
 import { BIG_ROOMS, SMALL_ROOMS } from  '~/routes/components/config/constants'
 //import { defer } from "react-router"; 
-import { timeout } from 'remix-utils/promise';
+
 import type { Route } from "~/routes/+types/home";
 
 function abortableDelay(ms: number, signal: AbortSignal): Promise<void> {
@@ -15,7 +15,7 @@ function abortableDelay(ms: number, signal: AbortSignal): Promise<void> {
   })
 }
 
-
+import { timeout } from 'remix-utils/promise'
 export async function loader({ params }: Route.LoaderArgs) {
   const controller = new AbortController();
   const timeoutid = setTimeout(() => controller.abort(), 6000); // 10s timeout
@@ -24,23 +24,34 @@ export async function loader({ params }: Route.LoaderArgs) {
     // const [smallA, bigB] = await Promise.all([
     //   delay(randomDelay()).then(() => SMALL_ROOMS),
     //   delay(randomDelay()).then(() => BIG_ROOMS),
-    // ]);
-    const smallAPromise = await timeout(Promise.resolve(SMALL_ROOMS), { ms: 100 });
-    //      const smallAPromis =await abortableDelay(8000, controller.signal).then(
-    //   () => SMALL_ROOMS
-    // );
-    const bigBPromise = abortableDelay(1000, controller.signal).then(() => {
-      if (true) {
-        return BIG_ROOMS
-      } else {
-        throw new Error('Failed to load SMALL_ROOMS')
-      }
-    })
+      // ]);
+         const smallAPromise = await abortableDelay(
+           5000,
+           controller.signal
+         ).then(() => SMALL_ROOMS)
+         const bigBPromise = abortableDelay(500, controller.signal).then(
+           () => {
+             if (true) {
+               return BIG_ROOMS
+             } else {
+               throw new Error('Failed to load SMALL_ROOMS')
+             }
+           }
+      )
+      
+      const smallAsPromise = timeout(Promise.resolve(SMALL_ROOMS), { ms: 7000 });// Will timeout before 7s finishes);
+       const bigBsPromise = timeout(bigBPromise, { ms: 1000 })
+      
+        const result = await Promise.all([smallAsPromise, bigBsPromise])
 
     return {
-      smallA: smallAPromise,
-      bigB: bigBPromise,
-    };
+        // smallA: smallAPromise,
+        // bigB: bigBPromise,
+        // smallA: await smallAPromise,
+        // bigB: await bigBPromise,
+      smallA: result[0],
+      bigB: result[1],
+    }
     //   return defer({
     //   smallA: delay(randomDelay()).then(() => SMALL_ROOMS),
     //   bigB: delay(randomDelay()).then(() => BIG_ROOMS),
