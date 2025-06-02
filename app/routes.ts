@@ -1,5 +1,15 @@
 
-import {route,layout, type RouteConfig, index ,prefix} from "@react-router/dev/routes";
+//relative function:  sergiodxa.com/tutorials/split-routes-config-in-react-router
+
+import {
+  route,
+  layout,
+  type RouteConfig,
+  index,
+  prefix,
+  relative,
+} from '@react-router/dev/routes'
+// const { route, index } = relative(import.meta.dirname)
 
 // lazy: () => import("~/routes/_")
 // element: <MainLayout /> 

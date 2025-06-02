@@ -64,6 +64,7 @@ import { ClientHintCheck } from './utils/client-hints';
 import { getEnv } from "./utils/env.server";
 import { combineHeaders } from "./utils/misc";
 
+//https://sergiodxa.com/articles/http-vs-server-side-cache-in-remix
 export let headers: HeadersFunction = () => {
   return {
     'Cache-Control': 'public, s-maxage=60',
