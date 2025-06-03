@@ -1,4 +1,12 @@
 import React from 'react'
+/**
+ * room
+ * - flex grow
+ * checkboxwaterfall
+ *  - 
+ * avvilable ours dropdown
+ * - may want to have provider
+ */
 import { type RoomType } from '~/routes/components/config/constants'
 const Room = ({ roomDetails }: { roomDetails: RoomType; }) => {
     //console.log(roomDetails)
@@ -40,67 +48,124 @@ import { useState ,lazy} from 'react'
 import { Link, useSearchParams,Outlet } from 'react-router';
 
 import { useEffect } from 'react';
-// import CheckboxWaterFall from './CheckboxWaterFall';
+import CheckboxWaterFall from './CheckboxWaterfall';
 // import AsyncFetcher from './AsyncFetcher';
 
 // const AsyncFetcher = lazy(() => import('./AsyncFetcher'))
 
 import { useParams } from 'react-router';
+
+/**
+ * 
+ * @param param0 
+ * @returns 
+ */
 const CheckBoxMenu = ({ roomId = 'o' }: { roomId?: string; }) => {
   const { selectedUser } = useParams()
   console.log(selectedUser)
-    
-    const r = roomId
-    const [open, setOpen] = useState<boolean>(false)    
-    return (
-         <DropdownMenu
-      modal={false}
-      open={open}
-      onOpenChange={setOpen}
-    >
-      <DropdownMenuTrigger
-          asChild
-                      onClick={(e) => e.stopPropagation()}
+  const [searchParams, setSearchParams] = useSearchParams()
+ // const [isOpen, setIsOpen] = useState(searchParams.get('dialog') === 'open')
 
-        className=' rounded-full select-none  px-4 text-2xl bg-white text-chasBlue border-2 border-chasBlue hover:bg-chasB  focus-visible:outline-none data-[state=open]:bg-chasBlue data-[state=open]:text-white'>
-         
-            	<Link
-						to={`/${selectedUser}/${roomId}`}
-						// this is for progressive enhancement
-						
-						className="flex items-center gap-2"
-					>
-          {' '}
-          <span>Se lediga timmar</span>
-              <FaChevronDown />
-              </Link>
-      
-      </DropdownMenuTrigger>
-        <DropdownMenuContent
-          className='mt-1 overflow-hidden rounded bg-[#ECE9E9]  p-2 text-left shadow' sideOffset={-1}>
-          {/* {open &&
-            <CheckboxWaterFall
-          roomId={r}
-        />} */}
-          <p>open</p>
-          <Outlet />
-          {/* <AsyncFetcher<any[]>
-        url="/resources/"
-        render={({
-          loading,
-          error,
-          data,
-        }: {
-          loading: boolean;
-          error?: string;
-          data?: any[];
-        }) => ( <div>test</div>)}
-/> */}
-      </DropdownMenuContent>
-    </DropdownMenu>
+  // 🔄 Sync state from URL to local state
+  // useEffect(() => {
+  //   setIsOpen(searchParams.get('dialog') === 'open')
+  // }, [searchParams])
+    const isDialogOpen = searchParams.get('dialog') === 'open'
+  const isOpen = true//isDialogOpen
+
+  // const toggleOpen = () => {
+  //   const updatedParams = new URLSearchParams(searchParams) // copy existing params
+  //   if (isOpen) {
+  //     updatedParams.set('dialog', 'closed') // or: updatedParams.delete('dialog') to remove
+  //   } else {
+  //     updatedParams.set('dialog', 'open')
+  //   }
+  //   setSearchParams(updatedParams)
+  // }
+  const setOpen = (next: boolean) => {
+    const updatedParams = new URLSearchParams(searchParams)
+    if (next) {
+      updatedParams.set('dialog', 'open')
+    } else {
+      updatedParams.set('dialog', 'closed') // or updatedParams.delete('dialog')
+    }
+    setSearchParams(updatedParams)
+  }
+
+    const r = roomId
+  // const [open, setOpen] = useState<boolean>(false)    
+  
+  
+
+    return (
+      <AvailableHoursDropdown
+        roomId={roomId}
+        open={isOpen}
+        setOpen={setOpen}
+      />
     )
 };
 type TimeSlots = Record<string, { timeSlotId: string; startTime: string, endTime: string; }[]>
+
+
+
+import { useRef } from 'react';
+type AvailableHoursDropdownProps = {
+  roomId: string;
+  open: boolean;
+  setOpen: (value: boolean) => void;
+};
+
+ function AvailableHoursDropdown({
+  roomId,
+  open=true,
+  setOpen,
+ }: AvailableHoursDropdownProps) {
+   
+  const didMount = useRef(false)
+
+  const handleOpenChange = (value: boolean) => {
+    if (!didMount.current) {
+      didMount.current = true
+      return // Skip initial onOpenChange on mount
+    }
+    setOpen(value)
+  }
+  return (
+    <DropdownMenu
+      modal={false}
+      open={true}
+      onOpenChange={handleOpenChange}>
+      <DropdownMenuTrigger
+        asChild
+        onClick={(e) => e.stopPropagation()}
+        className='rounded-full select-none px-4 text-2xl bg-white text-chasBlue border-2 border-chasBlue hover:bg-chasB focus-visible:outline-none data-[state=open]:bg-chasBlue data-[state=open]:text-white'>
+        <Button className='flex gap-2 text-base'>
+          <span>Se lediga timmar</span>
+          <FaChevronDown />
+        </Button>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent
+        className='mt-1 overflow-hidden rounded bg-[#ECE9E9] p-2 text-left shadow'
+        sideOffset={-1}>
+        {open && <CheckboxWaterFall roomId={roomId} />}
+        <Outlet />
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 type MultiselectProps = TimeSlots
@@ -199,7 +264,7 @@ const CheckboxWaterFallOld = ({roomId}:{roomId:string}) => {
     )
 };
 
-
+//https://github.com/fallowshades/Examination_chass/blob/main/app/routes/components/Room.tsx
 // 🔧 Helper to encode selection as string
 function encodeSelection(data: Record<string, TimeSlot[]>) {
   return Object.entries(data)

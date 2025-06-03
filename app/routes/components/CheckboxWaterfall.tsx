@@ -16,26 +16,22 @@ import { useEffect,useState } from 'react';
 // import { useUpdateCheckbox } from '../resources/UpdateCheckboxes';
 import  { type TimeSlot as TimeSlotList,defaultTimeSlotSkeletoons } from '~/utils/TimeSlots';
 const CheckboxWaterFall = ({ roomId }: { roomId: string; }) => {
-  
-  const fetcher = useFetcher({ key: 'resource.checkbox.update' })
-//#startregion
-  useEffect(() => {
-    if (fetcher.state === "idle" && !fetcher.data && true) {
-      fetcher.load("/resources/updatecheckbox?roomId=123"); // Route-specific loader or endpoint
-    }
-  }, []);
+  // const fetcher = useFetcher({ key: 'resource.checkbox.update' })
+  let [query, setQuery] = useState('')
+  let [value, setValue] = useState(() => defaultTimeSlotSkeletoons[0])
 
+  // Define LoaderData type to match the expected data structure from fetcher
+  type LoaderData = {
+    amenities?: TimeSlotList[];
+  };
   
+    let { data, load, state } = useFetcher<LoaderData>()
+  let defaultTimeSlotSkeletoonsRemote = data?.amenities ?? []
+
   const [selectedTimeSlots, setSelectedTimeSlots] = useState<TimeSlotList[]>(
     defaultTimeSlotSkeletoons
   )
 
-   useEffect(() => {
-    if (fetcher.data?.amenities) {
-      setSelectedTimeSlots(fetcher.data.amenities);
-    }
-  }, [fetcher.data]);
-//#endregion
 
 
   const handleChange = (amenity: TimeSlotList) => {
@@ -49,55 +45,55 @@ const CheckboxWaterFall = ({ roomId }: { roomId: string; }) => {
     })
   }
 
+  //#region format on client
   type FormattedTimeSlot = TimeSlotList & {
-    label: string;
-    icon: () => JSX.Element;
-  };
+    label: string
+    icon: () => JSX.Element
+  }
 
-  const formattedTimeSlots: FormattedTimeSlot[] = selectedTimeSlots.map((amenity) => ({
-    id: amenity.id,
-    timeSlotId: amenity.id,
-    label: `${amenity.startTime} - ${amenity.endTime}`,
-    startTime: amenity.startTime,
-    endTime: amenity.endTime,
-    icon: () => <span>🕒</span>,
-    selected: amenity.selected,
-  }));
-
+  const formattedTimeSlots: FormattedTimeSlot[] = selectedTimeSlots.map(
+    (amenity) => ({
+      id: amenity.id,
+      timeSlotId: amenity.id,
+      label: `${amenity.startTime} - ${amenity.endTime}`,
+      startTime: amenity.startTime,
+      endTime: amenity.endTime,
+      icon: () => <span>🕒</span>,
+      selected: amenity.selected,
+    })
+  )
+//#endregion
   return (
-    <div> 
-        <input
+    <div>
+      <input
         type='hidden'
         name='amenities'
         value={JSON.stringify(selectedTimeSlots)}
       />
-     {formattedTimeSlots.map((timeslot) => (
-  <DropdownMenuItem
-    key={timeslot.id}
-    onSelect={(e) => e.preventDefault()}
-    className='even:bg-white'>
-    
-    {/* Render the icon */}
-    {/** If you run into errors here, do:
+      {formattedTimeSlots.map((timeslot) => (
+        <DropdownMenuItem
+          key={timeslot.id}
+          onSelect={(e) => e.preventDefault()}
+          className='even:bg-white'>
+          {/* Render the icon */}
+          {/** If you run into errors here, do:
         const Icon = timeslot.icon;
         <Icon className="..." /> */}
-    <timeslot.icon />
+          <timeslot.icon />
 
-    <label
-      htmlFor={`timeslot-${timeslot.id}`}
-      className='flex items-center gap-2'
-    >
-      <Checkbox
-        id={`timeslot-${timeslot.id}`}
-        checked={!!timeslot.selected}
-        onCheckedChange={() => handleChange(timeslot)}
-      />
-      {timeslot.label}
-    </label>
-  </DropdownMenuItem>
-))}
-         
-        </div>
+          <label
+            htmlFor={`timeslot-${timeslot.id}`}
+            className='flex items-center gap-2'>
+            <Checkbox
+              id={`timeslot-${timeslot.id}`}
+              checked={!!timeslot.selected}
+              onCheckedChange={() => handleChange(timeslot)}
+            />
+            {timeslot.label}
+          </label>
+        </DropdownMenuItem>
+      ))}
+    </div>
   )
 }
 
@@ -108,3 +104,18 @@ import { GeneralErrorBoundary } from '~/routes/components/GeneralErrorBoundary';
 export function ErrorBoundary() {
     return <GeneralErrorBoundary />
 }
+
+
+  //#startregion
+  // useEffect(() => {
+  //   if (fetcher.state === "idle" && !fetcher.data && true) {
+  //     fetcher.load("/resources/updatecheckbox?roomId=123"); // Route-specific loader or endpoint
+  //   }
+  // }, [load]);
+  
+  //  useEffect(() => {
+  //   if (fetcher.data?.amenities) {
+  //     setSelectedTimeSlots(fetcher.data.amenities);
+  //   }
+  // }, [fetcher.data]);
+  //#endregion
