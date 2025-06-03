@@ -1,10 +1,12 @@
 import * as React from 'react'
 import { Slot } from '@radix-ui/react-slot'
 type CheckboxContext = {
+  state: 'expanded' | 'collapsed'
   open: boolean
   setOpen: (open: boolean) => void
   openMobile: boolean
   isMobile: boolean
+  toggleDropdown: () => void
 }
 
 const CheckboxContext = React.createContext<CheckboxContext | null>(null)
@@ -25,6 +27,7 @@ function CheckboxProvider({
   className,
   style,
   children,
+
   ...props
 }: React.ComponentProps<'div'> & {
   defaultOpen?: boolean
@@ -48,6 +51,11 @@ function CheckboxProvider({
 
   const state = open ? 'expanded' : 'collapsed'
 
+  const [isMobile, setOpenMobile] = React.useState(false)
+  const toggleDropdown = React.useCallback(() => {
+    return isMobile ? setOpenMobile((open) => !open) : setOpen((open) => !open)
+  }, [isMobile, setOpen, setOpenMobile])
+
   const contextValue = React.useMemo<CheckboxContext>(
     () => ({
       state,
@@ -55,6 +63,7 @@ function CheckboxProvider({
       setOpen,
       openMobile: false,
       isMobile: false,
+      toggleDropdown,
     }),
     [open, setOpen]
   )
@@ -65,3 +74,80 @@ function CheckboxProvider({
     </CheckboxContext.Provider>
   )
 }
+
+function Checkbox({
+  variant = 'checkbox',
+  className,
+  children,
+  collapsible,
+  ...props
+}: React.ComponentProps<'div'> & {
+  variant?: 'checkbox' | 'inset'
+  collapsible?: 'offCanvas' | 'icon' | 'none'
+}) {
+  const { isMobile, state, openMobile, setOpen } = useSharableCheckbox()
+
+  if (collapsible === 'none') {
+    // handle non-collapsible case
+    return (
+      <div
+        data-slot='sidebar'
+        {...props}>
+        {children}
+      </div>
+    )
+  }
+  if (true) {
+    return <div>this is a Mobiile</div>
+  }
+  if (isMobile) {
+    return <div>this is a Mobiile</div>
+  }
+
+  // Add your component rendering logic here
+  return (
+    <div
+      className={className}
+      {...props}>
+      {children}
+    </div>
+  )
+}
+
+export { CheckboxContext, CheckboxProvider, Checkbox }
+
+import { Button } from './ui/button'
+import { cn } from '~/lib/utils'
+import { FaChevronDown } from 'react-icons/fa'
+import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
+function CheckBoxTrigger({
+  className,
+  onClick,
+  ...props
+}: React.ComponentProps<typeof Button>) {
+  const { toggleDropdown } = useSharableCheckbox()
+
+  return (
+    <DropdownMenuTrigger
+      asChild
+      onClick={(e) => e.stopPropagation()}
+      className={cn('', className)}>
+      <Button
+        className='flex gap-2 text-base'
+        data-checkbox='trigger'
+        data-slot='checkbox-trigger'
+        //   variant='ghost'
+
+        onClick={(event) => {
+          onClick?.(event)
+          toggleDropdown()
+        }}
+        {...props}>
+        Se lediga timmar
+        <span className='sr-only'>Se lediga timmar</span>
+        <FaChevronDown />
+      </Button>
+    </DropdownMenuTrigger>
+  )
+}
+export { CheckBoxTrigger }

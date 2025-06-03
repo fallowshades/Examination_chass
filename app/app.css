@@ -1,11 +1,11 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
 html,
@@ -15,11 +15,8 @@ body {
   @media (prefers-color-scheme: dark) {
     color-scheme: dark;
   }
-   overflow-y: scroll;
+  overflow-y: scroll;
 }
-
-
-
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -136,4 +133,3 @@ body {
     @apply bg-background text-foreground;
   }
 }
-
