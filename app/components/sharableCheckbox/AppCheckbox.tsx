@@ -6,7 +6,13 @@ import {
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
 
-import { CheckBoxTrigger, CheckboxContext, Checkbox } from '../SharableCheckbox'
+import {
+  CheckboxContent,
+  CheckBoxTrigger,
+  CheckboxContext,
+  Checkbox,
+} from '../SharableCheckbox'
+import CheckboxWaterFall from '~/routes/components/CheckboxWaterfall'
 export default function AppCheckbox({
   ...props
 }: React.ComponentProps<typeof Checkbox>) {
@@ -17,10 +23,9 @@ export default function AppCheckbox({
 
   return (
     <DropdownMenu
-
-    //   modal={false}
-    //   open={true}
-    //   onOpenChange={handleOpenChange}
+      modal={false}
+      //   open={true}
+      //   onOpenChange={handleOpenChange}
     >
       {/* <DropdownMenuTrigger
         asChild
@@ -32,13 +37,17 @@ export default function AppCheckbox({
         </Button>
       </DropdownMenuTrigger> */}
       <CheckBoxTrigger className='rounded-full select-none px-4 text-2xl bg-white text-chasBlue border-2 border-chasBlue hover:bg-chasB focus-visible:outline-none data-[state=open]:bg-chasBlue data-[state=open]:text-white' />
-      <DropdownMenuContent
+      {/* <DropdownMenuContent
         className='mt-1 overflow-hidden rounded bg-[#ECE9E9] p-2 text-left shadow'
         sideOffset={-1}>
         SE LEDIGA TIMMAR!
         {/* {open && <CheckboxWaterFall roomId={roomId} />}
-        <Outlet /> */}
-      </DropdownMenuContent>
+        <Outlet /> 
+        </DropdownMenuContent>
+        */}
+      <CheckboxContent>
+        <CheckboxWaterFall roomId={'1'} />
+      </CheckboxContent>
     </DropdownMenu>
   )
 }

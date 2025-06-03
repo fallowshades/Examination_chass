@@ -119,7 +119,10 @@ export { CheckboxContext, CheckboxProvider, Checkbox }
 import { Button } from './ui/button'
 import { cn } from '~/lib/utils'
 import { FaChevronDown } from 'react-icons/fa'
-import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
+import {
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+} from '@radix-ui/react-dropdown-menu'
 function CheckBoxTrigger({
   className,
   onClick,
@@ -150,4 +153,20 @@ function CheckBoxTrigger({
     </DropdownMenuTrigger>
   )
 }
-export { CheckBoxTrigger }
+
+function CheckboxContent({ className, ...props }: React.ComponentProps<'div'>) {
+  return (
+    <DropdownMenuContent>
+      <div
+        data-slot='checkbox-content'
+        data-sidebar='content'
+        className={cn(
+          'flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden',
+          className
+        )}
+        {...props}
+      />
+    </DropdownMenuContent>
+  )
+}
+export { CheckBoxTrigger, CheckboxContent }

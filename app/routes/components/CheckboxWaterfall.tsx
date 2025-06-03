@@ -1,38 +1,39 @@
 import React, { type JSX } from 'react'
-import { useFetcher } from 'react-router';
+import { useFetcher } from 'react-router'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
-import { Checkbox } from '~/components/ui/checkbox';
+import { Checkbox } from '~/components/ui/checkbox'
 // { selectedTimeSlots }: {
 //     selectedTimeSlots: Record<string, {timeSlotId: string; startTime: string; endTime: string}[]>
-    
+
 // }
-import { useId } from 'react';
-import { useEffect,useState } from 'react';
+import { useId } from 'react'
+import { useEffect, useState } from 'react'
 // import { useUpdateCheckbox } from '../resources/UpdateCheckboxes';
-import  { type TimeSlot as TimeSlotList,defaultTimeSlotSkeletoons } from '~/utils/TimeSlots';
-const CheckboxWaterFall = ({ roomId }: { roomId: string; }) => {
+import {
+  type TimeSlot as TimeSlotList,
+  defaultTimeSlotSkeletoons,
+} from '~/utils/TimeSlots'
+const CheckboxWaterFall = ({ roomId }: { roomId: string }) => {
   // const fetcher = useFetcher({ key: 'resource.checkbox.update' })
   let [query, setQuery] = useState('')
   let [value, setValue] = useState(() => defaultTimeSlotSkeletoons[0])
 
   // Define LoaderData type to match the expected data structure from fetcher
   type LoaderData = {
-    amenities?: TimeSlotList[];
-  };
-  
-    let { data, load, state } = useFetcher<LoaderData>()
-  let defaultTimeSlotSkeletoonsRemote = data?.amenities ?? []
+    amenities?: TimeSlotList[]
+  }
+  const data = undefined
+  // let { data, load, state } = useFetcher<LoaderData>() data?.amenities
+  let defaultTimeSlotSkeletoonsRemote = data ?? []
 
   const [selectedTimeSlots, setSelectedTimeSlots] = useState<TimeSlotList[]>(
     defaultTimeSlotSkeletoons
   )
-
-
 
   const handleChange = (amenity: TimeSlotList) => {
     setSelectedTimeSlots((prev) => {
@@ -62,7 +63,7 @@ const CheckboxWaterFall = ({ roomId }: { roomId: string; }) => {
       selected: amenity.selected,
     })
   )
-//#endregion
+  //#endregion
   return (
     <div>
       <input
@@ -79,7 +80,6 @@ const CheckboxWaterFall = ({ roomId }: { roomId: string; }) => {
           {/** If you run into errors here, do:
         const Icon = timeslot.icon;
         <Icon className="..." /> */}
-          <timeslot.icon />
 
           <label
             htmlFor={`timeslot-${timeslot.id}`}
@@ -91,31 +91,30 @@ const CheckboxWaterFall = ({ roomId }: { roomId: string; }) => {
             />
             {timeslot.label}
           </label>
+          <timeslot.icon />
         </DropdownMenuItem>
       ))}
     </div>
   )
 }
 
-export default CheckboxWaterFall;
+export default CheckboxWaterFall
 
-
-import { GeneralErrorBoundary } from '~/routes/components/GeneralErrorBoundary';
+import { GeneralErrorBoundary } from '~/routes/components/GeneralErrorBoundary'
 export function ErrorBoundary() {
-    return <GeneralErrorBoundary />
+  return <GeneralErrorBoundary />
 }
 
+//#startregion
+// useEffect(() => {
+//   if (fetcher.state === "idle" && !fetcher.data && true) {
+//     fetcher.load("/resources/updatecheckbox?roomId=123"); // Route-specific loader or endpoint
+//   }
+// }, [load]);
 
-  //#startregion
-  // useEffect(() => {
-  //   if (fetcher.state === "idle" && !fetcher.data && true) {
-  //     fetcher.load("/resources/updatecheckbox?roomId=123"); // Route-specific loader or endpoint
-  //   }
-  // }, [load]);
-  
-  //  useEffect(() => {
-  //   if (fetcher.data?.amenities) {
-  //     setSelectedTimeSlots(fetcher.data.amenities);
-  //   }
-  // }, [fetcher.data]);
-  //#endregion
+//  useEffect(() => {
+//   if (fetcher.data?.amenities) {
+//     setSelectedTimeSlots(fetcher.data.amenities);
+//   }
+// }, [fetcher.data]);
+//#endregion

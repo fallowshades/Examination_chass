@@ -1,5 +1,5 @@
-import React from 'react'; 
-import type { Route } from '~/routes/+types/home';
+import React from 'react'
+import type { Route } from '~/routes/+types/home'
 import { Welcome } from '../welcome/welcome'
 
 export function meta({}: Route.MetaArgs) {
@@ -11,24 +11,26 @@ export function meta({}: Route.MetaArgs) {
 
 export { loader } from './home.loader'
 
-
 let cache: Record<string, unknown> | undefined
-export async function clientLoader({ serverLoader, params }: Route.ClientLoaderArgs) {
+export async function clientLoader({
+  serverLoader,
+  params,
+}: Route.ClientLoaderArgs) {
   try {
     if (cache) return { ...cache }
-  const serverData = await serverLoader()
-  cache = serverData
-  console.log('serverData', serverData)
-  return {
-    ...(typeof serverData === 'object' && serverData !== null
-      ? serverData
-      : {}),
-    params,
-  }
-  }catch(err){
+    const serverData = await serverLoader()
+    cache = serverData
+    console.log('serverData', serverData)
+    return {
+      ...(typeof serverData === 'object' && serverData !== null
+        ? serverData
+        : {}),
+      params,
+    }
+  } catch (err) {
     console.error('Failed to load SMALL_ROOMS', err)
-    return data({ data: [] }) 
-}
+    return data({ data: [] })
+  }
 }
 clientLoader.hydrate = false
 
@@ -65,7 +67,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
   return (
     <section
       id='section'
-      className='bg-chasLightGray'>
+      className='chas-light-gray'>
       {/* <BookingControlContainer /> */}
       <div className='flex  py-12   gap-4'>
         <Suspense fallback={<HydrateFallback />}>
