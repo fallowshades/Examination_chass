@@ -12,11 +12,13 @@ import FormSelect from '~/components/ui/FormSelect'
 
 import SearchContainer from '../components/SearchContainer'
 import SearchRemixContainer from '../components/SearchRemixContainer'
+
 export default function Layout({ loaderData }: Route.ComponentProps) {
   const fetcher = useFetcher()
 
   // const submit = useSubmit()
   const navigate = useNavigate()
+
   const handleUserChange = (newUserId: string) => {
     const search = location.search // preserve existing query params
     console.log(newUserId, 'newUserId')
@@ -29,7 +31,7 @@ export default function Layout({ loaderData }: Route.ComponentProps) {
   //const defaultUser = userMeta.includes(userId || '') ? userId : userMeta[0];
   const fallbackUser =
     typeof window !== 'undefined'
-      ? localStorage.getItem('selectedUser') || userMeta[0]
+      ? localStorage.getItem('selectedSegmentUser') || userMeta[0]
       : userMeta[0]
   const selectedUserConsition = userMeta.includes(userId || '')
     ? userId
@@ -43,11 +45,11 @@ export default function Layout({ loaderData }: Route.ComponentProps) {
   // Save to localStorage whenever userId changes
   useEffect(() => {
     if (selectedUser) {
-      const stored = localStorage.getItem('selectedUser')
+      const stored = localStorage.getItem('selectedSegmentUser')
       if (typeof window !== 'undefined' && selectedUserConsition && stored) {
         const value = localStorage.getItem('yourKey')
       }
-      localStorage.setItem('selectedUser', selectedUser)
+      localStorage.setItem('selectedSegmentUser', selectedUser)
     }
   }, [selectedUser])
   return (

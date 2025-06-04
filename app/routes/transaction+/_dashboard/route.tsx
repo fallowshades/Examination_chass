@@ -8,7 +8,7 @@ import {
   type ClientLoaderFunctionArgs,
   type HeadersFunction,
 } from 'react-router'
-import { useFetcher } from 'react-router'
+import { useFetcher, type ShouldRevalidateFunctionArgs } from 'react-router'
 import ATriggerBWeek from './components/ATriggerBWeek'
 import BTriggeredDay from './components/BTriggeredDay'
 import { parseQueryParams } from './components/config'
@@ -74,6 +74,20 @@ clientLoader.hydrate = false
 //   return { updatedData };
 // }
 
+export function shouldRevalidate({
+  actionResult,
+  defaultShouldRevalidate,
+  currentUrl,
+  nextUrl,
+  formMethod,
+}: ShouldRevalidateFunctionArgs) {
+  console.log('child shouldRevalidate')
+  if (currentUrl.pathname === nextUrl.pathname) {
+    return false
+  }
+  return defaultShouldRevalidate
+}
+
 export async function action({ request }: { request: Request }) {
   const { week } = parseQueryParams(request)
 
@@ -138,10 +152,10 @@ export default function dashboard({
   /**
    * try shared state note delayed response from rouad trip time.
    */
-  let [state, setState] = useState(() => {
-    const parsed = Number(searchParams.get('week'))
-    return isNaN(parsed) ? 9 : parsed
-  })
+  // let [state, setState] = useState(() => {
+  //   const parsed = Number(searchParams.get('week'))
+  //   return isNaN(parsed) ? 9 : parsed
+  // })
   const navigate = useNavigate()
   useEffect(() => {
     if (fetcher.data && fetcher.data.updatedWeek != null) {
@@ -164,26 +178,26 @@ export default function dashboard({
     }
   }, [fetcher.data])
 
-  useEffect(() => {
-    console.log('updatedWeek changed', state)
-  }, [state])
-  console.log(state, 'state')
+  // useEffect(() => {
+  //   console.log('updatedWeek changed', state)
+  // }, [state])
+  // console.log(state, 'state')
   console.log(JSON.stringify(fetcher.data), 'fetcher')
   const MemoizedOutlet = React.memo(() => <Outlet />)
   return (
     <>
       <div className='pt-7'>
         <ATriggerBWeek
-          key={state}
-          currentWeek={week || state}
+          key={'state'}
+          currentWeek={week}
         />
 
         <fetcher.Form
           method='POST'
           onSubmit={handleSubmit}>
           <BTriggeredDay
-            key={state}
-            week={week || state}
+            key={'state'}
+            week={week}
           />
         </fetcher.Form>
       </div>

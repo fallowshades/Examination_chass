@@ -34,6 +34,44 @@ export async function clientLoader({
 }
 clientLoader.hydrate = false
 
+export async function action() {
+  //await saveSomeStuff()
+  return { ok: true }
+}
+import type { ShouldRevalidateFunction } from 'react-router'
+//localhost:5174/bob?week=8&day=3&total=10http:
+
+export const shouldRevalidate: ShouldRevalidateFunction = ({
+  actionResult,
+  currentParams, //slug
+  currentUrl,
+  defaultShouldRevalidate,
+  formAction,
+  formData,
+  formEncType,
+  formMethod,
+  nextParams, //slug
+  nextUrl,
+}) => {
+  if (actionResult?.ok) {
+    return defaultShouldRevalidate
+  }
+  // Example optimization: if only the hash changed, skip revalidation
+  if (
+    currentUrl.pathname === nextUrl.pathname &&
+    currentUrl.search === nextUrl.search
+  ) {
+    return false
+  }
+
+  // Example: don't revalidate on GET form submissions
+  if (formMethod === 'GET') {
+    //does not seem related to parent
+    return false
+  }
+  return currentUrl.pathname !== nextUrl.pathname
+  return false
+}
 // export async function loader() {
 //   return defer({
 //     smallA: delay(randomDelay()).then(() => SMALL_ROOMS),
