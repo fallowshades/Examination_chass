@@ -101,19 +101,24 @@ const CheckBoxMenu = ({ roomId = 'o' }: { roomId?: string }) => {
   // const [open, setOpen] = useState<boolean>(false)
 
   return (
-    <CheckboxProviders>
-      <AppCheckbox />
-      <div
-        id='content'
-        className={cn()}>
-        <Outlet />
-      </div>
-    </CheckboxProviders>
-    // <AvailableHoursDropdown
-    //   roomId={roomId}
-    //   open={isOpen}
-    //   setOpen={setOpen}
-    // />
+    <>
+      {true ? (
+        <CheckboxProviders>
+          <AppCheckbox />
+          <div
+            id='content'
+            className={cn()}>
+            <Outlet />
+          </div>{' '}
+        </CheckboxProviders>
+      ) : (
+        <AvailableHoursDropdown
+          roomId={roomId}
+          open={isOpen}
+          setOpen={setOpen}
+        />
+      )}
+    </>
   )
 }
 type TimeSlots = Record<
