@@ -4,14 +4,14 @@ import {
   Meta,
   Outlet,
   Scripts,
-	ScrollRestoration,
+  ScrollRestoration,
   data,
   type ShouldRevalidateFunction,
-  type HeadersFunction
-} from "react-router";
+  type HeadersFunction,
+} from 'react-router'
 
-import type { Route } from "./+types/root";
-import "./app.css";
+import type { Route } from './+types/root'
+import appStyleHref from './app.css?url'
 
 /**
  * shouldRevalidate: data from remote container
@@ -21,8 +21,8 @@ import "./app.css";
  * Layout
  * App
  * ErrorBoundary
- * @returns 
- * 
+ * @returns
+ *
  */
 
 // export const shouldRevalidate: ShouldRevalidateFunction = ({
@@ -37,7 +37,7 @@ import "./app.css";
 
 /***
  * can preload svg sprite.
-*/
+ */
 // import { href as iconsHref } from '~/components/ui/icon'
 export const links: Route.LinksFunction = () => [
   // { rel: 'preload', href: iconsHref, as: 'image' },
@@ -54,15 +54,15 @@ export const links: Route.LinksFunction = () => [
   // } as const, // necessary to make typescript happy
   {
     rel: 'stylesheet',
-    href: 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap',
+    href: appStyleHref, //'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap',
   },
 ]
 
-import { makeTimings, time } from "./utils/timing.server";
-import { getUserId, logout } from "./utils/auth.server";
-import { ClientHintCheck } from './utils/client-hints';
-import { getEnv } from "./utils/env.server";
-import { combineHeaders } from "./utils/misc";
+import { makeTimings, time } from './utils/timing.server'
+import { getUserId, logout } from './utils/auth.server'
+import { ClientHintCheck } from './utils/client-hints'
+import { getEnv } from './utils/env.server'
+import { combineHeaders } from './utils/misc'
 
 //https://sergiodxa.com/articles/http-vs-server-side-cache-in-remix
 export let headers: HeadersFunction = () => {
@@ -72,81 +72,79 @@ export let headers: HeadersFunction = () => {
 }
 
 export async function loader({ request }: Route.LoaderArgs) {
-	const timings = makeTimings('root loader')
-	const userId = await time(() => getUserId(request), {
-		timings,
-		type: 'getUserId',
-		desc: 'getUserId in root',
-	})
+  const timings = makeTimings('root loader')
+  const userId = await time(() => getUserId(request), {
+    timings,
+    type: 'getUserId',
+    desc: 'getUserId in root',
+  })
 
-	const user = userId
-		? await time(
-				() =>
-					 new Promise((resolve) =>
-          setTimeout(() => {
-            resolve({
-              id: userId,
-              name: 'Test User',
-              username: 'testuser',
-              image: { objectKey: 'dummy-key' },
-              roles: [
-                {
-                  name: 'admin',
-                  permissions: [
-                    { entity: 'user', action: 'read', access: 'granted' },
-                    { entity: 'user', action: 'write', access: 'denied' },
-                  ],
-                },
-              ],
-            })
-          }, 300)
-        ),
-				{ timings, type: 'find user', desc: 'find user in root' },
-			)
-		: null
-	if (userId && !user) {
-		console.info('something weird happened')
-		// something weird happened... The user is authenticated but we can't find
-		// them in the database. Maybe they were deleted? Let's log them out.
-		await logout({ request, redirectTo: '/' })
-	}
-	
-	return data(
-		{
-			user,
-			requestInfo: {
-				// hints: getHints(request),
-				// origin: getDomainUrl(request),
-				path: new URL(request.url).pathname,
-				// userPrefs: {
-				// 	theme: getTheme(request),
-				// },
-			},
-			ENV: getEnv(),
-		},
-		{
-			headers: combineHeaders(
-				{ 'Server-Timing': timings.toString() }
-			),
-		},
-	)
+  const user = userId
+    ? await time(
+        () =>
+          new Promise((resolve) =>
+            setTimeout(() => {
+              resolve({
+                id: userId,
+                name: 'Test User',
+                username: 'testuser',
+                image: { objectKey: 'dummy-key' },
+                roles: [
+                  {
+                    name: 'admin',
+                    permissions: [
+                      { entity: 'user', action: 'read', access: 'granted' },
+                      { entity: 'user', action: 'write', access: 'denied' },
+                    ],
+                  },
+                ],
+              })
+            }, 300)
+          ),
+        { timings, type: 'find user', desc: 'find user in root' }
+      )
+    : null
+  if (userId && !user) {
+    console.info('something weird happened')
+    // something weird happened... The user is authenticated but we can't find
+    // them in the database. Maybe they were deleted? Let's log them out.
+    await logout({ request, redirectTo: '/' })
+  }
+
+  return data(
+    {
+      user,
+      requestInfo: {
+        // hints: getHints(request),
+        // origin: getDomainUrl(request),
+        path: new URL(request.url).pathname,
+        // userPrefs: {
+        // 	theme: getTheme(request),
+        // },
+      },
+      ENV: getEnv(),
+    },
+    {
+      headers: combineHeaders({ 'Server-Timing': timings.toString() }),
+    }
+  )
 }
 
 // import { type Theme } from './utils/theme.server'
 export type Theme = 'light' | 'dark'
 function Document({
-	children,
-	nonce,
-	theme = 'light',
-	env = {},
+  children,
+  nonce,
+  theme = 'light',
+  env = {},
 }: {
-	children: React.ReactNode;
-	nonce: string;
-	theme?: Theme;
-	env?: Record<string, string | undefined>;
+  children: React.ReactNode
+  nonce: string
+  theme?: Theme
+  env?: Record<string, string | undefined>
 }) {
-	const allowIndexing = env.ALLOW_INDEXING !== 'false';
-	return (
+  const allowIndexing = env.ALLOW_INDEXING !== 'false'
+  return (
     <html
       lang='en'
       className={`${theme} h-full overflow-x-hidden`}>
@@ -183,17 +181,19 @@ function Document({
     </html>
   )
 }
-import { useLoaderData } from "react-router";
-import { useNonce } from "./utils/nonce-provider";
+import { useLoaderData } from 'react-router'
+import { useNonce } from './utils/nonce-provider'
 
-export function Layout({ children }: { children: React.ReactNode; }) {
-	const data = useLoaderData<typeof loader | null>()
-	const nonce = useNonce()
-	
-	return (
-	  <Document nonce={nonce}  env={data?.ENV}>
-			{children}
-		</Document>
+export function Layout({ children }: { children: React.ReactNode }) {
+  const data = useLoaderData<typeof loader | null>()
+  const nonce = useNonce()
+
+  return (
+    <Document
+      nonce={nonce}
+      env={data?.ENV}>
+      {children}
+    </Document>
     // <html lang="en">
     //   <head>
     //     <meta charSet="utf-8" />
@@ -202,18 +202,18 @@ export function Layout({ children }: { children: React.ReactNode; }) {
     //     <Links />
     //   </head>
     //   <body>
-      
+
     //     {children}
     //     <ScrollRestoration />
     //     <Scripts />
     //   </body>
     // </html>
-  );
+  )
 }
 import { NonceProvider } from './utils/nonce-provider'
 declare global {
   interface Window {
-    __nonce?: string;
+    __nonce?: string
   }
 }
 
@@ -234,32 +234,31 @@ export default function App({
   )
 }
 
-
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-  let message = "Oops!";
-  let details = "An unexpected error occurred.";
-  let stack: string | undefined;
+  let message = 'Oops!'
+  let details = 'An unexpected error occurred.'
+  let stack: string | undefined
 
   if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? "404" : "Error";
+    message = error.status === 404 ? '404' : 'Error'
     details =
       error.status === 404
-        ? "The requested page could not be found."
-        : error.statusText || details;
+        ? 'The requested page could not be found.'
+        : error.statusText || details
   } else if (import.meta.env.DEV && error && error instanceof Error) {
-    details = error.message;
-    stack = error.stack;
+    details = error.message
+    stack = error.stack
   }
 
   return (
-    <main className="pt-16 p-4 container mx-auto">
+    <main className='pt-16 p-4 container mx-auto'>
       <h1>{message}</h1>
       <p>{details}</p>
       {stack && (
-        <pre className="w-full p-4 overflow-x-auto">
+        <pre className='w-full p-4 overflow-x-auto'>
           <code>{stack}</code>
         </pre>
       )}
     </main>
-  );
+  )
 }

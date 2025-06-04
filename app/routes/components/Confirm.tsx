@@ -1,7 +1,8 @@
 import React, { type ReactNode } from 'react'
-import { Link } from 'react-router'
+import { Link, useLocation } from 'react-router'
 import CustomLink from '~/components/CustomLink'
 const Confirm = ({ children }: { children?: ReactNode }) => {
+  const location = useLocation()
   return (
     <div>
       {' '}
