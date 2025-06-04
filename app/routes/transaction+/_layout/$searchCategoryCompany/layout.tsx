@@ -10,9 +10,8 @@ import {
 import { Button } from '~/components/ui/button'
 import FormSelect from '~/components/ui/FormSelect'
 
-
-
 import SearchContainer from '../components/SearchContainer'
+import SearchRemixContainer from '../components/SearchRemixContainer'
 export default function Layout({ loaderData }: Route.ComponentProps) {
   const fetcher = useFetcher()
 
@@ -80,7 +79,7 @@ export default function Layout({ loaderData }: Route.ComponentProps) {
             }
             className='w-12 h-12 rounded-full object-cover'
           />
-          <SearchContainer />
+          {true ? <SearchContainer /> : <SearchRemixContainer />}
         </div>
         {/* </fetcher.Form> */}
         <>

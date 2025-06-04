@@ -1,9 +1,8 @@
 // export * from '~/routes/$category/products'
 // export { default } from '~/routes/$category/products'
 
-export {
+export { default } from '~/routes/transaction+/_layout/$searchCategoryCompany/layout'
 
-  default,
-} from '~/routes/transaction+/_layout/$searchCategoryCompany/layout';
+import { loader } from '~/routes/transaction+/_layout/$searchCategoryCompany/layout.loader.server'
 
-export { loader } from '~/routes/transaction+/_layout/$searchCategoryCompany/layout.loader'
+export { loader }
