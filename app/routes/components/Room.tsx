@@ -104,7 +104,7 @@ const CheckBoxMenu = ({ roomId = 'o' }: { roomId?: string }) => {
     <>
       {true ? (
         <CheckboxProviders>
-          <AppCheckbox />
+          <AppCheckbox roomId={roomId} />
           <div
             id='content'
             className={cn()}>

@@ -41,8 +41,9 @@ export async function loader({ request, params }: Route.LoaderArgs) {
 
     ////////////////////////////////////////////////////////////for optional waterfall
     let url = new URL(request.url)
-    // let term = url.searchParams.get('term')
-    // let term = url.searchParams.get('term')
+    const term = url.searchParams.get('roomCheck')
+    const brands = url.searchParams.getAll('timeSlot')
+    console.log('brandsss', brands)
     return {
       // smallA: smallAPromise,
       // bigB: bigBPromise,

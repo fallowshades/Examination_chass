@@ -6,28 +6,70 @@
  *
  */
 
-import React, { type JSX } from 'react';
-import { useFetcher } from 'react-router';
+import React, { type JSX } from 'react'
+import { useFetcher, useSearchParams } from 'react-router'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu'
-import { Checkbox } from '~/components/ui/checkbox';
+import { Checkbox } from '~/components/ui/checkbox'
 // { selectedTimeSlots }: {
 //     selectedTimeSlots: Record<string, {timeSlotId: string; startTime: string; endTime: string}[]>
-    
-// }
-import { useId } from 'react';
-import { useEffect,useState } from 'react';
-// import { useUpdateCheckbox } from '../resources/UpdateCheckboxes';
-import  { type TimeSlot as TimeSlotList,defaultTimeSlotSkeletoons } from '~/utils/TimeSlots';
-const CheckboxWaterFall = ({ roomId }: { roomId: string; }) => {
 
-  const [selectedTimeSlots, setSelectedTimeSlots] = useState<TimeSlotList[]>(
-    defaultTimeSlotSkeletoons
+// }
+import { useId } from 'react'
+import { useEffect, useState } from 'react'
+// import { useUpdateCheckbox } from '../resources/UpdateCheckboxes';
+import {
+  type TimeSlot as TimeSlotList,
+  defaultTimeSlotSkeletoons,
+} from '~/utils/TimeSlots'
+const CheckboxWaterFall = ({ roomId }: { roomId: string }) => {
+  type FormattedTimeSlot = TimeSlotList & {
+    label: string
+    icon: () => JSX.Element
+  }
+  const [searchParams] = useSearchParams()
+  const brands = searchParams.getAll('timeSlot')
+  const formattedTimeSlots: FormattedTimeSlot[] = defaultTimeSlotSkeletoons.map(
+    (amenity) => ({
+      id: amenity.id,
+      timeSlotId: amenity.id,
+      label: `${amenity.startTime} - ${amenity.endTime}`,
+      startTime: amenity.startTime,
+      endTime: amenity.endTime,
+      icon: () => <span>🕒</span>, //can find
+      selected: amenity.selected,
+    })
   )
+  const [selectedTimeSlots, setSelectedTimeSlots] =
+    useState<TimeSlotList[]>(formattedTimeSlots)
+
+  const [SelectedRecord, setSelectedRecord] = useState({
+    [roomId]: selectedTimeSlots,
+  })
+  //#region local update and formation non serializable jsx match
+  const handleChange = (amenity: TimeSlotList) => {
+    setSelectedTimeSlots((prev) => {
+      return prev.map((a) => {
+        if (a.id === amenity.id) {
+          return { ...a, selected: !a.selected }
+        }
+        return a
+      })
+    })
+  }
+  useEffect(() => {
+    setSelectedRecord((prev) => ({
+      ...prev,
+      [roomId]: selectedTimeSlots,
+    }))
+  }, [selectedTimeSlots, roomId])
+
+  //#endregion
+
   //#startregion can' typpical waterfall
   // const fetcher = useFetcher({ key: 'resource.checkbox.update' })
   // useEffect(() => {
@@ -42,41 +84,12 @@ const CheckboxWaterFall = ({ roomId }: { roomId: string; }) => {
   // }, [fetcher.data])
   //#endregion
 
-  //#region local update and formation non serializable jsx match
-  const handleChange = (amenity: TimeSlotList) => {
-    setSelectedTimeSlots((prev) => {
-      return prev.map((a) => {
-        if (a.id === amenity.id) {
-          return { ...a, selected: !a.selected }
-        }
-        return a
-      })
-    })
-  }
-
-  type FormattedTimeSlot = TimeSlotList & {
-    label: string
-    icon: () => JSX.Element
-  }
-
-  const formattedTimeSlots: FormattedTimeSlot[] = selectedTimeSlots.map(
-    (amenity) => ({
-      id: amenity.id,
-      timeSlotId: amenity.id,
-      label: `${amenity.startTime} - ${amenity.endTime}`,
-      startTime: amenity.startTime,
-      endTime: amenity.endTime,
-      icon: () => <span>🕒</span>,
-      selected: amenity.selected,
-    })
-  )
-//#endregion
   return (
     <div>
       <input
         type='hidden'
         name='amenities'
-        value={JSON.stringify(selectedTimeSlots)}
+        value={JSON.stringify(SelectedRecord)}
       />
       {formattedTimeSlots.map((timeslot) => (
         <DropdownMenuItem
@@ -93,6 +106,7 @@ const CheckboxWaterFall = ({ roomId }: { roomId: string; }) => {
             htmlFor={`timeslot-${timeslot.id}`}
             className='flex items-center gap-2'>
             <Checkbox
+              name='timeSlot'
               id={`timeslot-${timeslot.id}`}
               checked={!!timeslot.selected}
               onCheckedChange={() => handleChange(timeslot)}
@@ -105,10 +119,9 @@ const CheckboxWaterFall = ({ roomId }: { roomId: string; }) => {
   )
 }
 
-export default CheckboxWaterFall;
+export default CheckboxWaterFall
 
-
-import { GeneralErrorBoundary } from '~/routes/components/GeneralErrorBoundary';
+import { GeneralErrorBoundary } from '~/routes/components/GeneralErrorBoundary'
 export function ErrorBoundary() {
-	return <GeneralErrorBoundary />
+  return <GeneralErrorBoundary />
 }

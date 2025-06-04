@@ -13,7 +13,13 @@ import {
   Checkbox,
 } from '../SharableCheckbox'
 import CheckboxWaterFall from '~/routes/components/CheckboxWaterfall'
+
+import { useState } from 'react'
+import { useFetcher } from 'react-router'
+import { useRef, useEffect } from 'react'
+import { useCheckboxFetcher } from '~/hooks/useCheckboxFetcher'
 export default function AppCheckbox({
+  roomId,
   ...props
 }: React.ComponentProps<typeof Checkbox>) {
   const ctx = React.useContext(CheckboxContext)
@@ -21,12 +27,80 @@ export default function AppCheckbox({
   if (!ctx)
     throw new Error('AppCheckbox must be used within a CheckboxProvider')
 
+  const [open, setOpen] = useState<boolean>(false)
+  const [selectedTimeSlots, setSelectedTimeSlots] = useState<
+    Record<string, { timeSlotID: string; startTime: string; endTime: string }[]>
+  >({})
+
+  // console.log('selectedTimes', selectedTimeSlots)
+  //const dispatch = useAppDispatch()
+  //const fetcher = useFetcher()
+  //const isFirstRender = useRef(true);
+  const hasOpened = useRef(false)
+
+  const handleOpenChange = (isOpen: boolean) => {
+    setOpen(isOpen)
+    const fetcher = useCheckboxFetcher(roomId, open, selectedTimeSlots)
+  }
+
+  useEffect(() => {
+    // if (isFirstRender.current) {
+    //   isFirstRender.current = false; // Skip first render
+    //   return;
+    // }
+    if (!hasOpened.current && !open) {
+      return // Skip the first effect run when component mounts
+    }
+
+    hasOpened.current = true
+    if (open) {
+      // Fetch available timeslots when opening
+      // fetcher.submit(
+      //   { actionType: 'fetch', roomId },
+      //   {
+      //     method: 'POST',
+      //   }
+      // )
+    } else {
+      // Save selected timeslots when closing
+      // const onlyCheckedTimeIntervals = selectedTimeslots
+      //   .filter((slot) => slot.selected)
+      //   .map((slot) => slot.name)
+      console.log(selectedTimeSlots, 'selectedTimeSlots')
+
+      const timeSlotsArray = Object.values(selectedTimeSlots).flat() || [] //each component can noly hold a single record
+      console.log(timeSlotsArray, 'sdf')
+      const bookingIds = timeSlotsArray.map((slot) => slot.timeSlotID)
+
+      const timeStrings = timeSlotsArray.map(
+        (slot) => `${slot.startTime}-${slot.endTime}`
+      )
+      // dispatch(
+      //   setInterval({
+      //     roomId,
+      //     interval: timeStrings,
+      //     selectedTimeSlots: bookingIds,
+      //   })
+      // )
+
+      // dispatch(setInterval({ roomId, interval: onlyCheckedTimeIntervals }))
+
+      // fetcher.submit(
+      //   {
+      //     actionType: 'save',
+      //     roomId,
+      //     selectedTimeslots: JSON.stringify(bookingIds),
+      //   },
+      //   { method: 'POST' } //, action: '/boka'
+      // )
+    }
+  }, [open])
+
   return (
     <DropdownMenu
       modal={false}
-      //   open={true}
-      //   onOpenChange={handleOpenChange}
-    >
+      open={true}
+      onOpenChange={handleOpenChange}>
       {/* <DropdownMenuTrigger
         asChild
         onClick={(e) => e.stopPropagation()}
