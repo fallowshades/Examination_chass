@@ -46,14 +46,26 @@ export async function loader({ request, params }: Route.LoaderArgs) {
     const term = url.searchParams.get('roomCheck')
     const brands = url.searchParams.getAll('timeSlot')
     console.log('brandsss', brands)
-    return {
-      // smallA: smallAPromise,
-      // bigB: bigBPromise,
-      // smallA: await smallAPromise,
-      // bigB: await bigBPromise,
-      smallA: result[0],
-      bigB: result[1],
-    }
+    // return {
+    //   // smallA: smallAPromise,
+    //   // bigB: bigBPromise,
+    //   // smallA: await smallAPromise,
+    //   // bigB: await bigBPromise,
+    //   smallA: result[0],
+    //   bigB: result[1],
+    // }
+    return new Response(
+      JSON.stringify({
+        smallA: result[0],
+        bigB: result[1],
+      }),
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'max-age=60, stale-while-revalidate=30', // example
+        },
+      }
+    )
     //   return defer({
     //   smallA: delay(randomDelay()).then(() => SMALL_ROOMS),
     //   bigB: delay(randomDelay()).then(() => BIG_ROOMS),

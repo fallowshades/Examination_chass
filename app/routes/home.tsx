@@ -98,7 +98,24 @@ import { Suspense, useMemo } from 'react'
 import { groupRooms } from '~/routes/components/config/utils'
 
 export function HydrateFallback() {
-  return <p>Loading Game...</p>
+  const skeletonLayer = {
+    groupId: <Skeleton className='h-4 w-[120px]' />,
+    id: <Skeleton className='h-4 w-[120px]' />,
+    rooms: Array(2).fill({
+      id: '8',
+      title: <Skeleton className='h-[10px] w-[7px] rounded-full' />,
+      capacity: Array.from({ length: 3 }, (_, i) => (
+        <Skeleton
+          key={i}
+          className='h-[20px] w-[100px] rounded-full py-2 mb-2'
+        />
+      )),
+      // image: <Skeleton className='h-[125px] w-[250px] rounded-xl' />,
+      layer: <Skeleton className='h-4 w-[20px]' />,
+    }), // or fake room data
+  }
+
+  return <BookingLayer layer={skeletonLayer} />
 }
 export function ErrorComponent({ error }: { error?: any }) {
   if (error?.status === 504) {
@@ -108,6 +125,8 @@ export function ErrorComponent({ error }: { error?: any }) {
 }
 import { type RoomType } from '~/routes/components/config/constants'
 import { useFetcher } from 'react-router'
+import { isSlowNetwork } from './hooks/isSlowNetwork'
+import { Skeleton } from '~/components/ui/skeleton'
 export default function Home({ loaderData }: Route.ComponentProps) {
   const data = loaderData
   const { bigB, smallA } = data
@@ -117,6 +136,9 @@ export default function Home({ loaderData }: Route.ComponentProps) {
   const promises = useMemo(() => Promise.all([smallA, bigB]), [smallA, bigB])
   console.log(promises)
 
+  if (isSlowNetwork() && false) {
+    console.log('ignore this case')
+  }
   return (
     <section
       id='section'
@@ -127,7 +149,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           key={location.key}
           fallback={
             <>
-              {[...Array(3)].map((_, i) => (
+              {[...Array(2)].map((_, i) => (
                 <HydrateFallback key={i} />
               ))}
             </>

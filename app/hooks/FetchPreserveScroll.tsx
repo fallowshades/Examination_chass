@@ -3,8 +3,12 @@ import { useCallback } from 'react'
 const navigate = useNavigate()
 const location = useLocation()
 
+interface Filters {
+  [key: string]: string | undefined
+}
+
 const setFilters = useCallback(
-  (newFilters) => {
+  (newFilters: Filters) => {
     const currentParams = new URLSearchParams(location.search)
 
     Object.entries(newFilters).forEach(([key, value]) => {

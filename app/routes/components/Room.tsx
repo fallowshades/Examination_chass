@@ -8,6 +8,7 @@ import React from 'react'
  * - may want to have provider
  */
 import { type RoomType } from '~/routes/components/config/constants'
+import { Skeleton } from '~/components/ui/skeleton'
 const Room = ({ roomDetails }: { roomDetails: RoomType }) => {
   //console.log(roomDetails)
   if (!roomDetails) {
@@ -17,11 +18,15 @@ const Room = ({ roomDetails }: { roomDetails: RoomType }) => {
     <div>
       <div className='flex flex-col  md:flex-row gap-2 justify-around items-center min-h-[100px] lg:min-h-[110px]'>
         <div>
-          <img
-            src={roomDetails?.image}
-            alt='rooom'
-            className='basis-sm grow-1 max-w-[200px]'
-          />
+          {typeof roomDetails?.image === 'string' ? (
+            <img
+              src={roomDetails.image}
+              alt='room'
+              className='basis-sm grow-1 max-w-[200px]'
+            />
+          ) : (
+            <Skeleton className='h-[125px] w-[200px] rounded-xl' /> // Replace with your actual skeleton node/component
+          )}
         </div>
         {/**1st box */}
         <div className='space-y-1'>
@@ -30,7 +35,11 @@ const Room = ({ roomDetails }: { roomDetails: RoomType }) => {
             {roomDetails?.capacity}
           </p>
         </div>
-        <CheckBoxMenu roomId={roomDetails?.id} />
+        {roomDetails?.id ? (
+          <CheckBoxMenu roomId={roomDetails.id} />
+        ) : (
+          <p>No room selected</p>
+        )}
       </div>
     </div>
   )

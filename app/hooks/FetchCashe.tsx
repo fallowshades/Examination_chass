@@ -72,15 +72,23 @@ function readPromiseState(promise: Promise<any>) {
 }
 //https://www.bbss.dev/posts/react-learn-suspense/
 
-const useFetch = (url) => {
-  const { fetchUrl } = useContext(fetchCacheContext)
-  const promise = fetchUrl(url)
+import React from 'react'
+
+// Create and export the context
+export const fetchCacheContext = React.createContext<FetchCache | null>(null)
+
+const useFetch = (url: string) => {
+  const fetchCache = useContext(fetchCacheContext)
+  if (!fetchCache) {
+    throw new Error('fetchCacheContext provider is missing')
+  }
+  const promise = fetchCache.fetchUrl(url, false)
 
   // Handles throwing for pending and rejected promises
   const data = use(promise)
 
   // Allow refreshing data
-  const reload = () => fetchUrl(url, true)
+  const reload = () => fetchCache.fetchUrl(url, true)
 
   // Only return data now
   return [data, reload]
