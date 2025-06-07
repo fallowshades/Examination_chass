@@ -19,42 +19,12 @@ export const formSchema = z.object({
   week: z.string({ required_error: 'Please this is a button' }),
 })
 
-import { calculateDayAndWeek } from '~/routes/queries.server'
-import type { TimeIntervalState } from './components/config/types'
-
 // export let headers: HeadersFunction = ({ loaderHeaders }) => {
 //   return { 'Cache-Control': loaderHeaders.get('Cache-Control') }
 // }
 
-export async function loader({ request }: { request: Request }) {
-  const url = new URL(request.url) // full URL, including origin, path, and search
-
-  const hasWeek = url.searchParams.has('week')
-  const hasDay = url.searchParams.has('day')
-
-  if (!hasWeek || !hasDay) {
-    const { dayOfWeek, weekOfYear } = calculateDayAndWeek()
-    const defaultState: TimeIntervalState = {
-      day: dayOfWeek,
-      week: weekOfYear,
-      totalHours: 0,
-      rooms: {},
-    }
-    console.log(dayOfWeek, weekOfYear, 'loader')
-    const origin = url.origin
-    const pathname = url.pathname //${weekOfYear}
-    //${url.origin &&('/' +url.origin)}
-    return redirect(`${url.pathname}?week=3.&day=${dayOfWeek}&total=10`)
-  }
-
-  // Don't redirect again; just return something or null
-  return null
-}
-
-export async function clientLoader({
-  serverLoader,
-  params,
-}: Route.ClientLoaderArgs) {
+// Don't redirect again; just return something or null
+async function clientLoader({ serverLoader, params }: Route.ClientLoaderArgs) {
   const serverData = await serverLoader()
   console.log('serverData', serverData)
   return { serverData, params }

@@ -70,7 +70,7 @@ export let headers: HeadersFunction = () => {
     'Cache-Control': 'public, s-maxage=60',
   }
 }
-
+import { getClientLocales } from 'remix-utils/locales/server'
 export async function loader({ request }: Route.LoaderArgs) {
   const timings = makeTimings('root loader')
   const userId = await time(() => getUserId(request), {
@@ -78,7 +78,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     type: 'getUserId',
     desc: 'getUserId in root',
   })
-
+  let locales = getClientLocales(request)
   const user = userId
     ? await time(
         () =>
@@ -113,6 +113,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 
   return data(
     {
+      locales,
       user,
       requestInfo: {
         // hints: getHints(request),
@@ -124,6 +125,7 @@ export async function loader({ request }: Route.LoaderArgs) {
       },
       ENV: getEnv(),
     },
+
     {
       headers: combineHeaders({ 'Server-Timing': timings.toString() }),
     }

@@ -1,9 +1,13 @@
 import { redirect } from 'react-router'
 import { calculateDayAndWeek } from '~/routes/queries.server'
 import type { TimeIntervalState } from './components/config/types'
+import { getClientLocales } from 'remix-utils/locales/server'
+//not may have to syncronize afterwards / mb a context wrapping root if cashe properly
 export async function loader({ request }: { request: Request }) {
   const url = new URL(request.url) // full URL, including origin, path, and search
-
+  let locales = getClientLocales(request)
+  console.log('client locales:', locales)
+  console.log('url:', url.toString())
   const hasWeek = url.searchParams.has('week')
   const hasDay = url.searchParams.has('day')
 

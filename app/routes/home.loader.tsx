@@ -17,7 +17,7 @@ function delay(ms: number) {
 }
 
 import { timeout, TimeoutError } from 'remix-utils/promise'
-import { getClientLocales } from 'remix-utils/locales/server'
+
 export async function loader({ request, params }: Route.LoaderArgs) {
   const controller = new AbortController()
   const timeoutid = setTimeout(() => controller.abort(), 6000) // 10s timeout
