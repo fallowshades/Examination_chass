@@ -34,8 +34,10 @@ export async function loader({ request, params }: Route.LoaderArgs) {
       }
     })
 
-    const smallAsPromise = timeout(Promise.resolve(SMALL_ROOMS), { ms: 7000 }) // Will timeout before 7s finishes);
-    const bigBsPromise = timeout(bigBPromise, { ms: 1000 })
+    const smallAsPromise = true
+      ? SMALL_ROOMS
+      : timeout(Promise.resolve(SMALL_ROOMS), { ms: 7000 }) // Will timeout before 7s finishes);
+    const bigBsPromise = true ? BIG_ROOMS : timeout(bigBPromise, { ms: 1000 })
 
     const result = await Promise.all([smallAsPromise, bigBsPromise])
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useTransition } from 'react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,10 +18,17 @@ import { useState } from 'react'
 import { useFetcher } from 'react-router'
 import { useRef, useEffect } from 'react'
 import { useCheckboxFetcher } from '~/hooks/useCheckboxFetcher'
-export default function AppCheckbox({
-  roomId,
-  ...props
-}: React.ComponentProps<typeof Checkbox>) {
+
+import { fetchData } from '~/components/sharableCheckbox/fakeApi'
+
+const initialResource = fetchData()
+interface AppCheckboxProps extends React.ComponentProps<typeof Checkbox> {
+  roomId: string
+}
+
+//www.npmjs.com/package/state-in-url
+// https://www.npmjs.com/package/nuqs .
+export default function AppCheckbox({ roomId, ...props }: AppCheckboxProps) {
   const ctx = React.useContext(CheckboxContext)
 
   if (!ctx)
@@ -31,7 +38,9 @@ export default function AppCheckbox({
   const [selectedTimeSlots, setSelectedTimeSlots] = useState<
     Record<string, { timeSlotID: string; startTime: string; endTime: string }[]>
   >({})
-
+  const [resource, setResource] = useState(initialResource)
+  const [isPending, startTransition] = useTransition()
+  // const fetchesr = useCheckboxFetcher(roomId, open, selectedTimeSlots)
   // console.log('selectedTimes', selectedTimeSlots)
   //const dispatch = useAppDispatch()
   //const fetcher = useFetcher()
@@ -39,8 +48,11 @@ export default function AppCheckbox({
   const hasOpened = useRef(false)
 
   const handleOpenChange = (isOpen: boolean) => {
-    setOpen(isOpen)
-    const fetcher = useCheckboxFetcher(roomId, open, selectedTimeSlots)
+    startTransition(() => {
+      setOpen(isOpen)
+      setResource(fetchData())
+    })
+    console.log(resource, 'resourcs')
   }
 
   useEffect(() => {
@@ -99,7 +111,7 @@ export default function AppCheckbox({
   return (
     <DropdownMenu
       modal={false}
-      open={true}
+      open={open}
       onOpenChange={handleOpenChange}>
       {/* <DropdownMenuTrigger
         asChild

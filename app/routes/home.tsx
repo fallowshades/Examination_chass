@@ -57,6 +57,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
     return defaultShouldRevalidate
   }
   // Example optimization: if only the hash changed, skip revalidation
+  return currentUrl.search !== nextUrl.search ? false : true
   if (
     currentUrl.pathname === nextUrl.pathname &&
     currentUrl.search === nextUrl.search
@@ -80,14 +81,20 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 // }
 import Confirm from './components/Confirm'
 import OnlineBooking from './components/OnlineBooking'
-import { Form, Await, type LoaderFunctionArgs, data } from 'react-router'
+import {
+  Form,
+  Await,
+  type LoaderFunctionArgs,
+  data,
+  useLocation,
+} from 'react-router'
 import BookingLayer from './components/BookingLayer'
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 const LazyBookingLayer = React.lazy(() =>
-  sleep(4000).then(() => import('./components/BookingLayer'))
+  sleep(2000).then(() => import('./components/BookingLayer'))
 )
 
-import { Suspense } from 'react'
+import { Suspense, useMemo } from 'react'
 import { groupRooms } from '~/routes/components/config/utils'
 
 export function HydrateFallback() {
@@ -100,17 +107,33 @@ export function ErrorComponent({ error }: { error?: any }) {
   return <div>Unexpected error occurred</div>
 }
 import { type RoomType } from '~/routes/components/config/constants'
+import { useFetcher } from 'react-router'
 export default function Home({ loaderData }: Route.ComponentProps) {
-  const { bigB, smallA } = loaderData
+  const data = loaderData
+  const { bigB, smallA } = data
+  const location = useLocation()
+
+  //const { deferred1, deferred2 } = data
+  const promises = useMemo(() => Promise.all([smallA, bigB]), [smallA, bigB])
+  console.log(promises)
+
   return (
     <section
       id='section'
       className='chas-light-gray'>
       {/* <BookingControlContainer /> */}
       <div className='flex  py-12   gap-4'>
-        <Suspense fallback={<HydrateFallback />}>
+        <Suspense
+          key={location.key}
+          fallback={
+            <>
+              {[...Array(3)].map((_, i) => (
+                <HydrateFallback key={i} />
+              ))}
+            </>
+          }>
           <Await
-            resolve={Promise.all([bigB, smallA])}
+            resolve={promises}
             errorElement={<ErrorComponent />}>
             {([resolvedBigB, resolvedSmallA]) => {
               const grouped = groupRooms(

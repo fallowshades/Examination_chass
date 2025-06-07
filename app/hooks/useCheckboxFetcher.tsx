@@ -48,7 +48,7 @@ export function useCheckboxFetcher(
       //     action: '/resources/save-checkboxes', // match your loader/action route
       //   })
     }
-  }, [open])
+  }, [open, fetcher.state, fetcher.data])
 
   return null
 }
