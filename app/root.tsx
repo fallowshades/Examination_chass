@@ -234,12 +234,21 @@ export default function App({
   )
 }
 
+import NotFoundError from './routes/_errors/404'
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   let message = 'Oops!'
   let details = 'An unexpected error occurred.'
   let stack: string | undefined
 
   if (isRouteErrorResponse(error)) {
+    if (error.status === 504) {
+      return (
+        <div className='p-4 text-red-600'>
+          Request timed out. Please try again later.
+          <NotFoundError />
+        </div>
+      )
+    }
     message = error.status === 404 ? '404' : 'Error'
     details =
       error.status === 404

@@ -12,8 +12,12 @@ function abortableDelay(ms: number, signal: AbortSignal): Promise<void> {
     })
   })
 }
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
 
-import { timeout } from 'remix-utils/promise'
+import { timeout, TimeoutError } from 'remix-utils/promise'
+import { getClientLocales } from 'remix-utils/locales/server'
 export async function loader({ request, params }: Route.LoaderArgs) {
   const controller = new AbortController()
   const timeoutid = setTimeout(() => controller.abort(), 6000) // 10s timeout
@@ -36,7 +40,10 @@ export async function loader({ request, params }: Route.LoaderArgs) {
 
     const smallAsPromise = true
       ? SMALL_ROOMS
-      : timeout(Promise.resolve(SMALL_ROOMS), { ms: 7000 }) // Will timeout before 7s finishes);
+      : timeout(
+          delay(8000).then(() => SMALL_ROOMS),
+          { ms: 7000 }
+        ) // Will timeout before 7s finishes);
     const bigBsPromise = true ? BIG_ROOMS : timeout(bigBPromise, { ms: 1000 })
 
     const result = await Promise.all([smallAsPromise, bigBsPromise])
@@ -71,11 +78,19 @@ export async function loader({ request, params }: Route.LoaderArgs) {
     //   bigB: delay(randomDelay()).then(() => BIG_ROOMS),
     // });;
   } catch (err) {
+    if (err instanceof TimeoutError) {
+      // Handle timeout
+    }
     console.error('Loader error:', err)
     console.error('Error loading rooms:', err)
-    throw new Response('Server Timeout', { status: 504 })
-  } finally {
+    if (err instanceof TimeoutError) {
+      console.error('Request timed out')
+
+      throw new Response('Request Timeout', { status: 504 })
+    }
     clearTimeout(timeoutid)
+    throw new Response('Server Error', { status: 500 })
+  } finally {
   }
 }
 // defer(

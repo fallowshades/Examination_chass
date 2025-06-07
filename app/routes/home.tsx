@@ -2,9 +2,19 @@ import React from 'react'
 import type { Route } from '~/routes/+types/home'
 import { Welcome } from '../welcome/welcome'
 
+/**
+ * meta
+ * loader
+ * clientLoader
+ * HydrateFallback
+ * Home
+ *
+ * @param param0
+ * @returns
+ */
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: 'New React Router App' },
+    { title: 'booking time' },
     { name: 'description', content: 'Welcome to React Router!' },
   ]
 }
@@ -177,7 +187,28 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               )
             }}
           </Await>
-          {/* <Await  resolve={bigB}  errorElement={<ErrorComponent />}>
+        </Suspense>
+      </div>
+      <div className='p-4 flex justify-center'>
+        <div className=' border-t '>
+          <OnlineBooking />
+        </div>
+      </div>
+      <div className='px-20'>
+        <Form method='POST'>
+          <input
+            type='hidden'
+            name='formType'
+            value='confirm'
+          />
+          <Confirm />
+        </Form>
+      </div>
+    </section>
+  )
+}
+{
+  /* <Await  resolve={bigB}  errorElement={<ErrorComponent />}>
           {(resolvedBigB) => {
            
 
@@ -206,24 +237,5 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             </>
           );
         }}
-      </Await> */}
-        </Suspense>
-      </div>
-      <div className='p-4 flex justify-center'>
-        <div className=' border-t '>
-          <OnlineBooking />
-        </div>
-      </div>
-      <div className='px-20'>
-        <Form method='POST'>
-          <input
-            type='hidden'
-            name='formType'
-            value='confirm'
-          />
-          <Confirm />
-        </Form>
-      </div>
-    </section>
-  )
+      </Await> */
 }

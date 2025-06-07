@@ -1,12 +1,12 @@
 //
-import { PassThrough } from "node:stream";
-import type { AppLoadContext, EntryContext } from "react-router";
+import { PassThrough } from 'node:stream'
+import type { AppLoadContext, EntryContext } from 'react-router'
 //
-import { createReadableStreamFromReadable } from "@react-router/node";
-import { ServerRouter } from "react-router";
-import { isbot } from "isbot";
-import type { RenderToPipeableStreamOptions } from "react-dom/server";
-import { renderToPipeableStream } from "react-dom/server";
+import { createReadableStreamFromReadable } from '@react-router/node'
+import { ServerRouter } from 'react-router'
+import { isbot } from 'isbot'
+import type { RenderToPipeableStreamOptions } from 'react-dom/server'
+import { renderToPipeableStream } from 'react-dom/server'
 
 //
 import { getEnv, init } from './utils/env.server'
@@ -19,8 +19,7 @@ import crypto from 'node:crypto'
 init()
 global.ENV = getEnv()
 
-
-export const streamTimeout = 5_000;
+export const streamTimeout = 3000
 
 export default function handleRequest(
   request: Request,
@@ -31,36 +30,36 @@ export default function handleRequest(
   // If you have middleware enabled:
   // loadContext: unstable_RouterContextProvider
 ) {
-
-
   const nonce = crypto.randomBytes(16).toString('hex')
-  
+
   return new Promise((resolve, reject) => {
-    let shellRendered = false;
-    let userAgent = request.headers.get("user-agent");
+    let shellRendered = false
+    let userAgent = request.headers.get('user-agent')
     const timings = makeTimings('render', 'renderToPipeableStream')
     // Ensure requests from bots and SPA Mode renders wait for all content to load before responding
     // https://react.dev/reference/react-dom/server/renderToPipeableStream#waiting-for-all-content-to-load-for-crawlers-and-static-generation
     let readyOption: keyof RenderToPipeableStreamOptions =
       (userAgent && isbot(userAgent)) || routerContext.isSpaMode
-        ? "onAllReady"
-        : "onShellReady";
-	// const callbackName = isbot(request.headers.get('user-agent'))
-	// 	? 'onAllReady'
-	// 	: 'onShellReady'
+        ? 'onAllReady'
+        : 'onShellReady'
+    // const callbackName = isbot(request.headers.get('user-agent'))
+    // 	? 'onAllReady'
+    // 	: 'onShellReady'
 
     const { pipe, abort } = renderToPipeableStream(
       <NonceProvider value={nonce}>
-        <ServerRouter context={routerContext} url={request.url} />
+        <ServerRouter
+          context={routerContext}
+          url={request.url}
+        />
       </NonceProvider>,
       {
         [readyOption]() {
-          shellRendered = true;
-          const body = new PassThrough();
-          const stream = createReadableStreamFromReadable(body);
-          
+          shellRendered = true
+          const body = new PassThrough()
+          const stream = createReadableStreamFromReadable(body)
 
-          responseHeaders.set("Content-Type", "text/html");
+          responseHeaders.set('Content-Type', 'text/html')
           responseHeaders.append('Server-Timing', timings.toString())
 
           resolve(
@@ -68,32 +67,31 @@ export default function handleRequest(
               headers: responseHeaders,
               status: responseStatusCode,
             })
-          );
+          )
 
-          pipe(body);
+          pipe(body)
         },
         onShellError(error: unknown) {
-          reject(error);
+          reject(error)
         },
         onError(error: unknown) {
-          responseStatusCode = 500;
+          responseStatusCode = 500
           // Log streaming rendering errors from inside the shell.  Don't log
           // errors encountered during initial shell rendering since they'll
           // reject and get logged in handleDocumentRequest.
           if (shellRendered) {
-            console.error(error);
+            console.error(error)
           }
         },
       }
-    );
+    )
 
     // Abort the rendering stream after the `streamTimeout` so it has time to
     // flush down the rejected boundaries
-    setTimeout(abort, streamTimeout + 1000);
-  });
+    setTimeout(abort, streamTimeout + 1000)
+  })
 }
 import {
- 
   type LoaderFunctionArgs,
   type ActionFunctionArgs,
   type HandleDocumentRequestFunction,
@@ -114,6 +112,4 @@ export function handleError(
   } else {
     console.error(error)
   }
-
-
 }

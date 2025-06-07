@@ -36,7 +36,7 @@ const Room = ({ roomDetails }: { roomDetails: RoomType }) => {
           </p>
         </div>
         {roomDetails?.id ? (
-          <CheckBoxMenu roomId={roomDetails.id} />
+          <CheckBoxMenu roomId={String(roomDetails.id)} />
         ) : (
           <p>No room selected</p>
         )}
