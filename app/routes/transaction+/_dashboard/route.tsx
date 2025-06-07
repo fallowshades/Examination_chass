@@ -82,7 +82,11 @@ export function shouldRevalidate({
   formMethod,
 }: ShouldRevalidateFunctionArgs) {
   console.log('child shouldRevalidate')
-  if (currentUrl.pathname === nextUrl.pathname) {
+  // Don't revalidate if path and query params are unchanged
+  if (
+    currentUrl.pathname === nextUrl.pathname &&
+    currentUrl.search === nextUrl.search
+  ) {
     return false
   }
   return defaultShouldRevalidate
