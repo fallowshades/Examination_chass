@@ -10,6 +10,7 @@ import React from 'react'
 import { type RoomType } from '~/routes/components/config/constants'
 import { Skeleton } from '~/components/ui/skeleton'
 const Room = ({ roomDetails }: { roomDetails: RoomType }) => {
+  const [imageError, setImageError] = useState(false)
   //console.log(roomDetails)
   if (!roomDetails) {
     return <div>Room data is unavailable</div> // Handle missing data gracefully
@@ -18,22 +19,39 @@ const Room = ({ roomDetails }: { roomDetails: RoomType }) => {
     <div>
       <div className='flex flex-col  md:flex-row gap-2 justify-around items-center min-h-[100px] lg:min-h-[110px]'>
         <div>
-          {typeof roomDetails?.image === 'string' ? (
-            <img
-              src={roomDetails.image}
-              alt='room'
-              className='basis-sm grow-1 max-w-[200px]'
-            />
-          ) : (
-            <Skeleton className='h-[125px] w-[200px] rounded-xl' /> // Replace with your actual skeleton node/component
-          )}
+          {
+            //typeof roomDetails?.image === 'string' ? (
+            typeof roomDetails?.image === 'string' &&
+            !imageError &&
+            roomDetails.image.match(/\.(jpeg|jpg|gif|png|webp)$/i) ? (
+              <img
+                src={roomDetails.image}
+                alt='room'
+                className='basis-sm grow-1 max-w-[200px]'
+                onError={() => setImageError(true)}
+              />
+            ) : (
+              <Skeleton className='h-[125px] w-[200px] rounded-xl' /> // Replace with your actual skeleton node/component
+            )
+          }
         </div>
         {/**1st box */}
         <div className='space-y-1'>
-          <h6>{roomDetails?.title}</h6>
-          <p className='min-w-[20ch] max-w-[20ch] break-words '>
-            {roomDetails?.capacity}
-          </p>
+          <h6>
+            {roomDetails?.title ? (
+              roomDetails.title
+            ) : (
+              <Skeleton className='h-[20px] w-[150px] rounded-md' />
+            )}
+          </h6>
+
+          <div className='min-w-[20ch] max-w-[20ch] break-words'>
+            {roomDetails?.capacity ? (
+              roomDetails.capacity
+            ) : (
+              <Skeleton className='h-[16px] w-[100px] rounded-md' />
+            )}
+          </div>
         </div>
         {roomDetails?.id ? (
           <CheckBoxMenu roomId={String(roomDetails.id)} />
