@@ -17,13 +17,27 @@ const Confirm = ({ children }: { children?: ReactNode }) => {
       </CustomLink>
       <Link
         className='bg-red-200'
-        to='./error/path'>
+        to={{
+          pathname: './error/path',
+          search: location.search, // ✅ preserves search
+        }}>
         Confirm Error
       </Link>
       <Link
         className='bg-yellow-200'
-        to='./home'>
+        to={{
+          pathname: './',
+          search: location.search, // ✅ preserves search
+        }}>
         without suspense
+      </Link>
+      <Link
+        className='bg-blue-200'
+        to={{
+          pathname: '/home',
+          search: location.search, // ✅ preserves search
+        }}>
+        with suspense
       </Link>
     </div>
   )

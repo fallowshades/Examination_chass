@@ -170,7 +170,9 @@ export default function Home({ loaderData }: Route.ComponentProps) {
     <section
       id='section'
       className='chas-light-gray'>
-      <h1>without suspense</h1>
+      <div className='flex justify-center'>
+        <h1 className='bg-yellow-200'>without suspense</h1>
+      </div>{' '}
       <div className='flex py-12 gap-4'>
         {grouped.map((layer, i) => (
           <React.Fragment key={i}>
@@ -181,6 +183,21 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             )}
           </React.Fragment>
         ))}
+      </div>
+      <div className='p-4 flex justify-center'>
+        <div className=' border-t '>
+          <OnlineBooking />
+        </div>
+      </div>
+      <div className='px-20'>
+        <Form method='POST'>
+          <input
+            type='hidden'
+            name='formType'
+            value='confirm'
+          />
+          <Confirm />
+        </Form>
       </div>
     </section>
   )

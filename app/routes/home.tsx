@@ -163,6 +163,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
       id='section'
       className='chas-light-gray'>
       {/* <BookingControlContainer /> */}
+      <h1 className='bg-blue-200'>with suspense</h1>
       <div className='flex  py-12   gap-4'>
         <Suspense
           key={location.key}

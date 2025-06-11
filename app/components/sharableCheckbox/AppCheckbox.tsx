@@ -17,7 +17,7 @@ import CheckboxWaterFall from '~/routes/components/CheckboxWaterfall'
 import { useState } from 'react'
 import { useFetcher } from 'react-router'
 import { useRef, useEffect } from 'react'
-import { useCheckboxFetcher } from '~/hooks/useCheckboxFetcher'
+import { useCheckboxFetcher } from '~/routes/resources/useCheckboxFetcher'
 
 import { fetchData } from '~/components/sharableCheckbox/fakeApi'
 
