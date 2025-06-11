@@ -25,6 +25,11 @@ export default function Layout({ loaderData }: Route.ComponentProps) {
   // const submit = useSubmit()
   const navigate = useNavigate()
 
+  useEffect(() => {
+    if (!userMeta.includes(userId || '' || 'userSelected')) {
+      navigate(`/${userMeta[0]}${location.search}`, { replace: true })
+    }
+  }, [])
   const handleUserChange = (newUserId: string) => {
     const search = location.search // preserve existing query params
     console.log(newUserId, 'newUserId')
