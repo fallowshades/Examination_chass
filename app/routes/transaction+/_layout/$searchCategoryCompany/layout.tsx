@@ -6,6 +6,8 @@ import {
   useSubmit,
   useParams,
   type LoaderFunctionArgs,
+  useMatches,
+  Link,
 } from 'react-router'
 import { Button } from '~/components/ui/button'
 import FormSelect from '~/components/ui/FormSelect'
@@ -13,9 +15,13 @@ import FormSelect from '~/components/ui/FormSelect'
 import SearchContainer from '../components/SearchContainer'
 import SearchRemixContainer from '../components/SearchRemixContainer'
 
+export const handle = {
+  breadcrumb: () => <Link to='/layout'>Some Route</Link>,
+}
+
 export default function Layout({ loaderData }: Route.ComponentProps) {
   const fetcher = useFetcher()
-
+  const matches = useMatches()
   // const submit = useSubmit()
   const navigate = useNavigate()
 
@@ -47,7 +53,8 @@ export default function Layout({ loaderData }: Route.ComponentProps) {
     if (selectedUser) {
       const stored = localStorage.getItem('selectedSegmentUser')
       if (typeof window !== 'undefined' && selectedUserConsition && stored) {
-        const value = localStorage.getItem('yourKey')
+        const value = localStorage.getItem('selectedSegmentUser') || userMeta[0]
+        setSelectedUser(value)
       }
       localStorage.setItem('selectedSegmentUser', selectedUser)
     }
@@ -56,6 +63,27 @@ export default function Layout({ loaderData }: Route.ComponentProps) {
     <>
       <header className='p-4 bg-blue-100'>
         <p>Pathless Layout Header</p>
+        <ol>
+          {matches
+            .filter(
+              (match) =>
+                match.handle &&
+                (
+                  match.handle as {
+                    breadcrumb?: (match: any) => React.ReactNode
+                  }
+                ).breadcrumb
+            )
+            .map((match, index) => (
+              <li key={index}>
+                {(
+                  match.handle as {
+                    breadcrumb: (match: any) => React.ReactNode
+                  }
+                ).breadcrumb(match)}
+              </li>
+            ))}
+        </ol>
       </header>
       <main className=''>
         {/* <fetcher.Form

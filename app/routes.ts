@@ -1,4 +1,3 @@
-
 //relative function:  sergiodxa.com/tutorials/split-routes-config-in-react-router
 
 import {
@@ -12,9 +11,9 @@ import {
 // const { route, index } = relative(import.meta.dirname)
 
 // lazy: () => import("~/routes/_")
-// element: <MainLayout /> 
+// element: <MainLayout />
 //   {
-       
+
 //          file: "routes/_layout.tsx",
 //     children: [
 //       index("routes/home.tsx")
@@ -23,7 +22,8 @@ import {
 export default [
   layout('routes/transaction+/_layout/route.tsx', [
     route('/', 'routes/dashboard.tsx', [
-      index('routes/homeIndex.tsx'),
+      route('home', 'routes/homeIndex.tsx'), //dont use suspens
+      index('routes/homeRoute.tsx'),
       route('/:userId', 'routes/home.tsx', [
         route(':dates', 'routes/dashboard.dates.tsx'),
       ]),
@@ -32,7 +32,7 @@ export default [
     ]),
 
     route('/viewBookings/:id', 'routes/ViewBookings.tsx'),
-    route('codeBasedRoutingNoCollocatedModules','routes/_layout.tsx'),
+    route('codeBasedRoutingNoCollocatedModules', 'routes/_layout.tsx'),
     route('*', 'routes/_errors/404.tsx'),
   ]),
 ] satisfies RouteConfig
@@ -41,14 +41,13 @@ export default [
 
 // export default flatRoutes() satisfies RouteConfig
 
-
 //  {
-        //   ignoredRouteFiles: ['**/.*'], // Ignore dot files (like .DS_Store)
-          //appDir: 'app',
-          //routeDir: 'routes',
-          //basePath: '/',
-          //paramPrefixChar: '$',
-          //nestedDirectoryChar: '+',
-          //routeRegex: /((\${nestedDirectoryChar}[\/\\][^\/\\:?*]+)|[\/\\]((index|route|layout|page)|(_[^\/\\:?*]+)|([^\/\\:?*]+\.route)))\.(ts|tsx|js|jsx|md|mdx)$$/,
-    //     })
-    //   }, 
+//   ignoredRouteFiles: ['**/.*'], // Ignore dot files (like .DS_Store)
+//appDir: 'app',
+//routeDir: 'routes',
+//basePath: '/',
+//paramPrefixChar: '$',
+//nestedDirectoryChar: '+',
+//routeRegex: /((\${nestedDirectoryChar}[\/\\][^\/\\:?*]+)|[\/\\]((index|route|layout|page)|(_[^\/\\:?*]+)|([^\/\\:?*]+\.route)))\.(ts|tsx|js|jsx|md|mdx)$$/,
+//     })
+//   },

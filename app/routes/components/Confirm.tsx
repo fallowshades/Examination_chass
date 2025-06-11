@@ -20,6 +20,11 @@ const Confirm = ({ children }: { children?: ReactNode }) => {
         to='./error/path'>
         Confirm Error
       </Link>
+      <Link
+        className='bg-yellow-200'
+        to='./home'>
+        without suspense
+      </Link>
     </div>
   )
 }

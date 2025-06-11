@@ -146,108 +146,42 @@ export default function Home({ loaderData }: Route.ComponentProps) {
   const { bigB, smallA } = data
   const location = useLocation()
 
-  //const { deferred1, deferred2 } = data
-  const promises = useMemo(() => Promise.all([smallA, bigB]), [smallA, bigB])
-  console.log(promises)
-
-  if (isSlowNetwork() && false) {
-    console.log('ignore this case')
-  }
   const logError = (error: Error, info: { componentStack: string }) => {
-    // Do something with the error, e.g. log to an external API
     console.log('Error logged:', error, info)
   }
+  const fetcher = useFetcher()
+
+  // If you want to support Deferred, unwrap manually or ignore until resolved
+  const isLoaded = Array.isArray(bigB) && Array.isArray(smallA)
+
+  if (!isLoaded) {
+    return (
+      <div className='flex py-12 gap-4'>
+        {[...Array(2)].map((_, i) => (
+          <HydrateFallback key={i} />
+        ))}
+      </div>
+    )
+  }
+
+  const grouped = groupRooms(bigB, smallA)
 
   return (
     <section
       id='section'
       className='chas-light-gray'>
-      {/* <BookingControlContainer /> */}
-      <div className='flex  py-12   gap-4'>
-        <Suspense
-          key={location.key}
-          fallback={
-            <>
-              {[...Array(2)].map((_, i) => (
-                <HydrateFallback key={i} />
-              ))}
-            </>
-          }>
-          <Await
-            resolve={promises}
-            errorElement={<ErrorComponent />}>
-            {([resolvedBigB, resolvedSmallA]) => {
-              const grouped = groupRooms(
-                resolvedBigB as RoomType[] | undefined,
-                resolvedSmallA as RoomType[] | undefined
-              )
-              return (
-                <ComponentErrorBoundary
-                  fallbackRender={({ error }) => (
-                    <ErrorFallback error={error} />
-                  )}>
-                  {grouped.map((layer, i) => (
-                    <React.Fragment key={i}>
-                      {false ? (
-                        <BookingLayer layer={layer} />
-                      ) : (
-                        <LazyBookingLayer layer={layer} />
-                      )}
-                    </React.Fragment>
-                  ))}
-                </ComponentErrorBoundary>
-              )
-            }}
-          </Await>
-        </Suspense>
-      </div>
-      <div className='p-4 flex justify-center'>
-        <div className=' border-t '>
-          <OnlineBooking />
-        </div>
-      </div>
-      <div className='px-20'>
-        <Form method='POST'>
-          <input
-            type='hidden'
-            name='formType'
-            value='confirm'
-          />
-          <Confirm />
-        </Form>
+      <h1>without suspense</h1>
+      <div className='flex py-12 gap-4'>
+        {grouped.map((layer, i) => (
+          <React.Fragment key={i}>
+            {false ? (
+              <BookingLayer layer={layer} />
+            ) : (
+              <LazyBookingLayer layer={layer} />
+            )}
+          </React.Fragment>
+        ))}
       </div>
     </section>
   )
-}
-{
-  /* <Await  resolve={bigB}  errorElement={<ErrorComponent />}>
-          {(resolvedBigB) => {
-           
-
-            const grouped = groupRooms(resolvedBigB,);
-
-            return (
-              <>
-                {grouped.map((layer, i) => (
-                  <BookingLayer key={i} layer={layer} />
-                ))}
-              </>
-            );
-          }}
-        </Await>
-        <Await resolve={smallA}  errorElement={<ErrorComponent />}>
-        {(resolvedSmallA) => {
-         
-
-          const grouped = groupRooms( resolvedSmallA);
-
-          return (
-            <>
-              {grouped.map((layer, i) => (
-                <BookingLayer key={i} layer={layer} />
-              ))}
-            </>
-          );
-        }}
-      </Await> */
 }
