@@ -103,12 +103,12 @@ export default function Layout({ loaderData }: Route.ComponentProps) {
               handleUserChange(selectedUserId)
             }}
           />
-          <img
+          {/* <img
             src={
               'https://scontent.fgse1-1.fna.fbcdn.net/v/t39.30808-6/454827025_7931072470262275_7423371356918111227_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=ULAGo8X9TXMQ7kNvwGUufM8&_nc_oc=Adnj42jMfTBcMGs0ZImgWu3kWJPnaLtGDCfjyMc12vJrSUvwzWqI6OYUjvAApGY0j0c&_nc_zt=23&_nc_ht=scontent.fgse1-1.fna&_nc_gid=0_jsESz4Uq2xfTTjInQzmQ&oh=00_AfJ-bxSbqPLIDOxeUipNQP9qKtXuanuCnj_Vrv2pPVZwnw&oe=683CF323'
             }
             className='w-12 h-12 rounded-full object-cover'
-          />
+          /> */}
           {true ? <SearchContainer /> : <SearchRemixContainer />}
         </div>
         {/* </fetcher.Form> */}

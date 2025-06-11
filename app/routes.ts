@@ -22,15 +22,18 @@ import {
 export default [
   layout('routes/transaction+/_layout/route.tsx', [
     route('/', 'routes/dashboard.tsx', [
-      route('home', 'routes/homeIndex.tsx'), //dont use suspens
       index('routes/homeRoute.tsx'),
+      route('home', 'routes/homeIndex.tsx'), //dont use suspens
       route('/:userId', 'routes/home.tsx', [
-        route(':dates', 'routes/dashboard.dates.tsx'),
+        // route(':dates', 'routes/dashboard.dates.tsx'),
       ]),
 
       route('/:id', 'routes/CheckboxWaterFall.tsx'),
     ]),
-
+    // route(
+    //   '/resources/save-checkboxes',
+    //   'routes/resources/useCheckboxFetcher.tsx'
+    // ),
     route('/viewBookings/:id', 'routes/ViewBookings.tsx'),
     route('codeBasedRoutingNoCollocatedModules', 'routes/_layout.tsx'),
     route('*', 'routes/_errors/404.tsx'),
