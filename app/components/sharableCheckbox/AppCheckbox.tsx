@@ -17,7 +17,7 @@ import CheckboxWaterFall from '~/routes/components/CheckboxWaterfall'
 import { useState } from 'react'
 import { useFetcher } from 'react-router'
 import { useRef, useEffect } from 'react'
-import { useCheckboxFetcher } from '~/hooks/useCheckboxFetcher'
+import { useCheckboxFetcher } from '~/routes/resources/useCheckboxFetcher'
 
 import { fetchData } from '~/components/sharableCheckbox/fakeApi'
 
@@ -28,6 +28,10 @@ interface AppCheckboxProps extends React.ComponentProps<typeof Checkbox> {
 
 //www.npmjs.com/package/state-in-url
 // https://www.npmjs.com/package/nuqs .
+//dont use the route fetcher hook, use component
+
+import { useComponentFetcher } from '../ComponentErrorBoundary'
+
 export default function AppCheckbox({ roomId, ...props }: AppCheckboxProps) {
   const ctx = React.useContext(CheckboxContext)
 
@@ -40,7 +44,9 @@ export default function AppCheckbox({ roomId, ...props }: AppCheckboxProps) {
   >({})
   const [resource, setResource] = useState(initialResource)
   const [isPending, startTransition] = useTransition()
-  // const fetchesr = useCheckboxFetcher(roomId, open, selectedTimeSlots)
+  //const fetcher = useComponentFetcher()
+
+  //const fetchesr = useCheckboxFetcher(roomId, open, selectedTimeSlots)
   // console.log('selectedTimes', selectedTimeSlots)
   //const dispatch = useAppDispatch()
   //const fetcher = useFetcher()

@@ -1,5 +1,18 @@
 import { useFetcher } from 'react-router'
 import { useRef, useEffect } from 'react'
+
+import { type ActionFunctionArgs } from 'react-router'
+
+export const loader = async ({ request }: ActionFunctionArgs) => {
+  return null
+}
+
+export const action = async ({ request }: ActionFunctionArgs) => {
+  const formData = await request.formData()
+  const name = formData.get('name')
+  return null
+}
+
 export function useCheckboxFetcher(
   roomId: string,
   open: boolean,

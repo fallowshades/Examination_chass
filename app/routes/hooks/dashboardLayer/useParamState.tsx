@@ -1,5 +1,5 @@
 /**
- * we want our store to be remote and need to useSearchParams to sync. basically we iterate over the entries. 
+ * we want our store to be remote and need to useSearchParams to sync. basically we iterate over the entries.
  * the policy is basically to replace and modify the search params in the URL
  * se we have a pipeline. we can payload and look existence. w may use effect to later create links.
  * we can compose from params and update serialized and parse it. is hook w particals for forms.
@@ -41,7 +41,12 @@ function useParamState<T extends string | number | boolean | object>(
     (newValue: Partial<T> | T) => {
       const updatedValue =
         typeof newValue === 'object' && !Array.isArray(newValue)
-          ? { ...(typeof state === 'object' && state !== null ? state : {}), ...(typeof newValue === 'object' && newValue !== null ? newValue : {}) }
+          ? {
+              ...(typeof state === 'object' && state !== null ? state : {}),
+              ...(typeof newValue === 'object' && newValue !== null
+                ? newValue
+                : {}),
+            }
           : newValue
 
       setState(updatedValue as T)
@@ -57,21 +62,19 @@ function useParamState<T extends string | number | boolean | object>(
 
 export default useParamState
 
-
-
 /**
  * ACTION
  * Remove a value from an existing parameter where the parameter can occur multiple times
  * If the value is the last value, the parameter is removed
- * 
- * @param {URLSearchParams} searchParams 
- * @param {string} key 
- * @param {string} value 
+ *
+ * @param {URLSearchParams} searchParams
+ * @param {string} key
+ * @param {string} value
  */
 interface RemoveParamsOptions {
-  searchParams: URLSearchParams;
-  key: string;
-  value: string;
+  searchParams: URLSearchParams
+  key: string
+  value: string
 }
 
 export function removeExistingParamsArrayValue(
@@ -79,7 +82,7 @@ export function removeExistingParamsArrayValue(
   key: string,
   value: string
 ): void {
-  console.log(searchParams, key, value);
+  console.log(searchParams, key, value)
   // const existingParams = extractExistingParams(searchParams);
   // if (existingParams[key]) {
   //   existingParams[key] = existingParams[key].filter(v => v !== value);
@@ -105,7 +108,6 @@ export function removeExistingParamsArrayValue(
 //     : '/recipes'
 // }
 
-
 //how to compose the search. within hook.
 
 // const serialize = (state) => {
@@ -128,7 +130,6 @@ export function removeExistingParamsArrayValue(
 // 19};
 // 20 21const MyComponent = () => {
 // 22  const [searchParams, setSearchParams] = useSearchParams({ ... }, { serialize, parse });
-
 
 /**
  * url is resilient user friendly app.
