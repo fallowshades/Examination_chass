@@ -1,11 +1,11 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
 html,
@@ -15,11 +15,8 @@ body {
   @media (prefers-color-scheme: dark) {
     color-scheme: dark;
   }
-   overflow-y: scroll;
+  overflow-y: scroll;
 }
-
-
-
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -59,7 +56,66 @@ body {
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+@theme {
+  --black: #2b2f2f;
+  --primary-400: #1d4ed8;
+  --chas-blue: #156079;
+  --chas-blue-hover: #082a35;
+  --chas-cerise: #ff6fb6;
+  --chas-green: #3ac856;
+  --chas-orange: #f6b55f;
+  --chas-gray: #2b2f2f;
+  --chas-light-gray: #fafafa;
+  --banner: #156079a1;
+  --banner-shade: #7693a34d;
+  --input: #156079;
+  --view-booking-button: #7693a340;
+  --gray-chas: #f8f8f8;
+  --policy: #d3dbe0;
+  --positive: #a3c856;
+  --negative: #ff9fb6;
+  --neutral: #2b2f2f;
+  --table-grey: #ece9e9;
+  --admin-grey: #eff4fa;
+}
+
 :root {
+  /* Colors */
+
+  /* Fonts */
+  --font-playfair: 'Playfair Display', serif;
+  --font-sans: 'Roboto', 'PlayFair Display', sans-serif;
+  --font-heading: 'Playpen Sans', sans-serif;
+  --font-caveat: 'Caveat', sans-serif;
+
+  /* Font Weights */
+  --font-weight-light: 300;
+
+  /* Line Heights */
+  --line-height-h1: 45px;
+  --line-height-h2: 38px;
+  --line-height-h3: 34px;
+  --line-height-body: 24px;
+  --line-height-body-highlight: 24px;
+  --line-height-small: 20px;
+  --line-height-button: 18px;
+
+  /* Spacing */
+  --spacing-gutter: 24px;
+  --spacing-margin: 48px;
+  --spacing-section: 32px;
+  --spacing-component: 16px;
+
+  /* Border Radius */
+  --radius-button: 20px;
+
+  /* Breakpoints (just for reference) */
+  --screen-sm: 640px;
+  --screen-md: 768px;
+  --screen-lg: 1024px;
+  --screen-xl: 1280px;
+  --screen-2xl: 1536px;
+  /**/
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.13 0.028 261.692);
@@ -136,4 +192,3 @@ body {
     @apply bg-background text-foreground;
   }
 }
-

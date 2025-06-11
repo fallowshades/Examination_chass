@@ -1,41 +1,28 @@
-import React, { useEffect,useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Outlet, useNavigate } from 'react-router'
-import type { Route } from "./+types/_layout+";
+import type { Route } from '../../../+types/_layout' //../
 import {
   useFetcher,
   useSubmit,
   useParams,
- type LoaderFunctionArgs,
+  type LoaderFunctionArgs,
 } from 'react-router'
-import { Button } from '~/components/ui/button';
-import FormSelect from '~/components/ui/FormSelect';
-import { getTimeOptions } from './query.server';
+import { Button } from '~/components/ui/button'
+import FormSelect from '~/components/ui/FormSelect'
 
+import SearchContainer from '../components/SearchContainer'
+import SearchRemixContainer from '../components/SearchRemixContainer'
 
-export async function loader({ request }: LoaderFunctionArgs) {
-    let { searchParams } = new URL(request.url);
-      let query = searchParams.get('query')
-  let startTime = searchParams.getAll('startTime')
-  let timeSlots = await getTimeOptions(startTime )
-  return { query, timeSlots };
-};
-clientLoader.hydrate = false
-export async function clientLoader() {
-  return null
-}
-
-import SearchContainer from './components/SearchContainer';
-export default function Layout({
-  loaderData,
-}: Route.ComponentProps){
+export default function Layout({ loaderData }: Route.ComponentProps) {
   const fetcher = useFetcher()
 
   // const submit = useSubmit()
   const navigate = useNavigate()
+
   const handleUserChange = (newUserId: string) => {
     const search = location.search // preserve existing query params
     console.log(newUserId, 'newUserId')
-    navigate(`/${newUserId}${search}`,{replace: true})
+    navigate(`/${newUserId}${search}`, { replace: true })
   }
 
   const userMeta = ['alice', 'bob', 'carol']
@@ -44,10 +31,12 @@ export default function Layout({
   //const defaultUser = userMeta.includes(userId || '') ? userId : userMeta[0];
   const fallbackUser =
     typeof window !== 'undefined'
-      ? localStorage.getItem('selectedUser') || userMeta[0]
+      ? localStorage.getItem('selectedSegmentUser') || userMeta[0]
       : userMeta[0]
-  const selectedUserConsition = userMeta.includes(userId || '') ? userId : fallbackUser
-   const routeUser = userMeta.includes(userId || '') ? userId : undefined;
+  const selectedUserConsition = userMeta.includes(userId || '')
+    ? userId
+    : fallbackUser
+  const routeUser = userMeta.includes(userId || '') ? userId : undefined
   // 🌟 State for selected user
   const [selectedUser, setSelectedUser] = useState(() => {
     // Avoid SSR mismatch: only use routeUser on first render
@@ -56,11 +45,11 @@ export default function Layout({
   // Save to localStorage whenever userId changes
   useEffect(() => {
     if (selectedUser) {
-       const stored = localStorage.getItem('selectedUser')
+      const stored = localStorage.getItem('selectedSegmentUser')
       if (typeof window !== 'undefined' && selectedUserConsition && stored) {
         const value = localStorage.getItem('yourKey')
       }
-      localStorage.setItem('selectedUser', selectedUser)
+      localStorage.setItem('selectedSegmentUser', selectedUser)
     }
   }, [selectedUser])
   return (
@@ -92,7 +81,7 @@ export default function Layout({
             }
             className='w-12 h-12 rounded-full object-cover'
           />
-          <SearchContainer />
+          {true ? <SearchContainer /> : <SearchRemixContainer />}
         </div>
         {/* </fetcher.Form> */}
         <>
@@ -103,17 +92,15 @@ export default function Layout({
       </main>
     </>
   )
-};
-  // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-  //   {
-  //     e.preventDefault()
-  //     fetcher.submit(e.target as HTMLFormElement)
-  //     // window.location.reload()
-  //   }
-  // }
+}
+// const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+//   {
+//     e.preventDefault()
+//     fetcher.submit(e.target as HTMLFormElement)
+//     // window.location.reload()
+//   }
+// }
 
-
-  
 // const ResponsiveBallContent = ({
 //   children,
 //   nrFr = 2,
@@ -132,4 +119,3 @@ export default function Layout({
 //     </div>
 //   )
 // }
-

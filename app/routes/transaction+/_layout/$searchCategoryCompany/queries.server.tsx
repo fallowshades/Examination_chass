@@ -27,4 +27,8 @@ type TimeSlotBase = {
     //  return defaultTimeSlotSkeletonsBase.filter(
     //    (slot) => slot.startTime === startTime
     //  )
-  }
+}
+export const performMutation = ({}) => {
+  console.log('performMutation called with:', {})
+  return null
+}

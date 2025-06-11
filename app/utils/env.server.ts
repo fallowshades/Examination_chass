@@ -1,3 +1,4 @@
+//https://sergiodxa.com/articles/using-zod-to-safely-read-env-variables
 import { z } from 'zod'
 
 const schema = z.object({
